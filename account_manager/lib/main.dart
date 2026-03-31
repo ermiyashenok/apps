@@ -46,7 +46,7 @@ class AccountManagerApp extends StatelessWidget {
             letterSpacing: -0.5,
           ),
         ),
-        cardTheme: const CardThemeData(
+        cardTheme: CardThemeData(
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
