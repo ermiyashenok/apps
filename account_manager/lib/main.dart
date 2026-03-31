@@ -25,25 +25,24 @@ class AccountManagerApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1F2937), // Dark sleek color
-          primary: const Color(0xFF0F172A),
-          secondary: const Color(0xFF3B82F6),
-          background: const Color(0xFFF8FAFC),
+          seedColor: const Color(0xFF000000), // Pure Black for max contrast
+          primary: const Color(0xFF111827),
+          secondary: const Color(0xFF6366F1), // Rich Indigo accent
           surface: Colors.white,
         ),
-        scaffoldBackgroundColor: const Color(0xFFF8FAFC), // Slate 50
+        scaffoldBackgroundColor: const Color(0xFFFCFCFD), // Ultra crisp almost-white
         textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
           centerTitle: false,
-          iconTheme: IconThemeData(color: Color(0xFF1E293B)),
+          iconTheme: IconThemeData(color: Color(0xFF111827)),
           titleTextStyle: TextStyle(
-            color: Color(0xFF0F172A),
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.5,
+            color: Color(0xFF111827),
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -1.0,
           ),
         ),
         cardTheme: CardThemeData(
