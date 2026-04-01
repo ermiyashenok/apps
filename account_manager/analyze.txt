@@ -1,0 +1,36 @@
+Analyzing account_manager...                                    
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\calendar_screen.dart:61:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\calendar_screen.dart:67:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\calendar_screen.dart:150:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\calendar_screen.dart:179:39 - deprecated_member_use
+warning - The receiver can't be null, so the null-aware operator '?[' is unnecessary - lib\screens\calendar_screen.dart:209:41 - invalid_null_aware_operator
+  error - The operator '[]' isn't defined for the type 'bool' - lib\screens\calendar_screen.dart:209:43 - undefined_operator
+  error - Expected an identifier - lib\screens\calendar_screen.dart:209:44 - missing_identifier
+  error - Expected to find ';' - lib\screens\calendar_screen.dart:209:44 - expected_token
+warning - Dead code - lib\screens\calendar_screen.dart:209:45 - dead_code
+  error - Expected to find ';' - lib\screens\calendar_screen.dart:209:45 - expected_token
+  error - Expected to find ']' - lib\screens\calendar_screen.dart:209:45 - expected_token
+  error - Expected to find ']' - lib\screens\calendar_screen.dart:209:45 - expected_token
+  error - Unterminated string literal - lib\screens\calendar_screen.dart:209:69 - unterminated_string_literal
+  error - Expected to find ';' - lib\screens\calendar_screen.dart:215:7 - expected_token
+warning - Dead code - lib\screens\calendar_screen.dart:215:8 - dead_code
+  error - Expected an identifier - lib\screens\calendar_screen.dart:215:8 - missing_identifier
+  error - Expected to find ';' - lib\screens\calendar_screen.dart:215:8 - expected_token
+  error - Unexpected text ';' - lib\screens\calendar_screen.dart:215:8 - unexpected_token
+  error - Expected an identifier - lib\screens\calendar_screen.dart:216:5 - missing_identifier
+  error - Unexpected text ';' - lib\screens\calendar_screen.dart:216:5 - unexpected_token
+   info - Unnecessary empty statement - lib\screens\calendar_screen.dart:216:6 - empty_statements
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:68:62 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:85:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:131:62 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:144:68 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:153:65 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:154:65 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:182:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:200:95 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:240:26 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:254:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\main_dashboard.dart:54:63 - deprecated_member_use
+warning - Unused import: 'package:flutter/material.dart' - test\widget_test.dart:1:8 - unused_import
+

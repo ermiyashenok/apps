@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(28),
-                      border: Border.all(color: Colors.black.withOpacity(0.04)),
+                      border: Border.all(color: Colors.black.withValues(alpha: 0.04)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -82,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                         Container(
                           height: 40,
                           width: 1,
-                          color: Colors.black.withOpacity(0.06),
+                          color: Colors.black.withValues(alpha: 0.06),
                         ),
                         Expanded(
                           child: Padding(
@@ -128,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                   ? Center(
                       child: Text(
                         'No transactions yet',
-                        style: TextStyle(color: Colors.black.withOpacity(0.4), fontSize: 16),
+                        style: TextStyle(color: Colors.black.withValues(alpha: 0.4), fontSize: 16),
                       ),
                     )
                   : ListView.builder(
@@ -141,7 +141,7 @@ class HomeScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(24),
-                            border: Border.all(color: Colors.black.withOpacity(0.03)),
+                            border: Border.all(color: Colors.black.withValues(alpha: 0.03)),
                           ),
                           child: Row(
                             children: [
@@ -150,8 +150,8 @@ class HomeScreen extends StatelessWidget {
                                 height: 48,
                                 decoration: BoxDecoration(
                                   color: tx.isIncome 
-                                      ? const Color(0xFF10B981).withOpacity(0.1)
-                                      : const Color(0xFFF43F5E).withOpacity(0.1),
+                                      ? const Color(0xFF10B981).withValues(alpha: 0.1)
+                                      : const Color(0xFFF43F5E).withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
@@ -179,7 +179,7 @@ class HomeScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.black.withOpacity(0.4),
+                                        color: Colors.black.withValues(alpha: 0.4),
                                       ),
                                     ),
                                   ],
@@ -197,7 +197,7 @@ class HomeScreen extends StatelessWidget {
                               const SizedBox(width: 12),
                               GestureDetector(
                                 onTap: () => txProvider.deleteTransaction(tx.id),
-                                child: Icon(Icons.delete_outline_rounded, color: Colors.black.withOpacity(0.2), size: 20),
+                                child: Icon(Icons.delete_outline_rounded, color: Colors.black.withValues(alpha: 0.2), size: 20),
                               ),
                             ],
                           ),
@@ -237,7 +237,7 @@ class HomeScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 18),
@@ -251,7 +251,7 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
               ),
             ),
             const SizedBox(height: 2),

@@ -51,7 +51,7 @@ class _MainDashboardState extends State<MainDashboard> {
           });
         },
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        indicatorColor: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+        indicatorColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
         elevation: 0,
         destinations: const [
           NavigationDestination(

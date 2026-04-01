@@ -1,8 +1,32 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/transaction.dart';
 
 class TransactionProvider with ChangeNotifier {
-  final List<Transaction> _transactions = [];
+  List<Transaction> _transactions = [];
+
+  TransactionProvider() {
+    _loadTransactions();
+  }
+
+  Future<void> _loadTransactions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? transactionsString = prefs.getString('transactions');
+    if (transactionsString != null) {
+      final List<dynamic> jsonList = json.decode(transactionsString);
+      _transactions = jsonList.map((jsonItem) => Transaction.fromJson(jsonItem)).toList();
+      notifyListeners();
+    }
+  }
+
+  Future<void> _saveTransactions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String transactionsString = json.encode(
+      _transactions.map((tx) => tx.toJson()).toList(),
+    );
+    await prefs.setString('transactions', transactionsString);
+  }
 
   List<Transaction> get transactions {
     // Return a sorted list, newest first
@@ -49,11 +73,13 @@ class TransactionProvider with ChangeNotifier {
 
   void addTransaction(Transaction tx) {
     _transactions.add(tx);
+    _saveTransactions();
     notifyListeners();
   }
 
   void deleteTransaction(String id) {
     _transactions.removeWhere((tx) => tx.id == id);
+    _saveTransactions();
     notifyListeners();
   }
 }
