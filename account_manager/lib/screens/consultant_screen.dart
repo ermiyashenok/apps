@@ -31,7 +31,7 @@ class ConsultantScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Professional financial advice at your fingertips.',
+              'Professional financial advice right at your fingertips.',
               style: TextStyle(
                 fontSize: 14,
                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
