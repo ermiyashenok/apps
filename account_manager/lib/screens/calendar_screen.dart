@@ -49,69 +49,72 @@ class _CalendarScreenState extends State<CalendarScreen> {
           right: !popLeft ? (screenSize.width - position.dx) + 20 : null,
           top: popTop ? position.dy + 20 : null,
           bottom: !popTop ? (screenSize.height - position.dy) + 20 : null,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-                border: Border.all(
-                  color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    DateFormat('MMM d, yyyy').format(date),
-                    style: TextStyle(
-                       fontWeight: FontWeight.w700, 
-                       fontSize: 15,
-                       color: Theme.of(context).colorScheme.onSurface,
+          child: TapRegion(
+            onTapOutside: (_) => _hideHoverPopup(),
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
                     ),
+                  ],
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.arrow_downward, color: Colors.green[500], size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        '\$${income.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: Colors.green[600],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
-                        ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      DateFormat('MMM d, yyyy').format(date),
+                      style: TextStyle(
+                         fontWeight: FontWeight.w700, 
+                         fontSize: 15,
+                         color: Theme.of(context).colorScheme.onSurface,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.arrow_upward, color: Colors.red[400], size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        '\$${expense.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: Colors.red[500],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.arrow_downward, color: Colors.green[500], size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          '\$${income.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            color: Colors.green[600],
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.arrow_upward, color: Colors.red[400], size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          '\$${expense.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            color: Colors.red[500],
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -137,23 +140,27 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ? theme.colorScheme.error 
                 : theme.colorScheme.onSurface;
 
-    return MouseRegion(
-      onEnter: (event) => _showHoverPopup(context, day, event.position),
-      onExit: (_) => _hideHoverPopup(),
-      child: Container(
-        margin: const EdgeInsets.all(6.0),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: isSelected 
-              ? theme.colorScheme.primary 
-              : isToday 
-                  ? theme.colorScheme.primary.withValues(alpha: 0.3) 
-                  : null,
-          shape: BoxShape.circle,
-        ),
-        child: Text(
-          '${day.day}',
-          style: TextStyle(color: textColor),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (details) => _showHoverPopup(context, day, details.globalPosition),
+      child: MouseRegion(
+        onEnter: (event) => _showHoverPopup(context, day, event.position),
+        onExit: (_) => _hideHoverPopup(),
+        child: Container(
+          margin: const EdgeInsets.all(6.0),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: isSelected 
+                ? theme.colorScheme.primary 
+                : isToday 
+                    ? theme.colorScheme.primary.withValues(alpha: 0.3) 
+                    : null,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            '${day.day}',
+            style: TextStyle(color: textColor),
+          ),
         ),
       ),
     );
