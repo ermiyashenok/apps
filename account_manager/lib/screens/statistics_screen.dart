@@ -10,7 +10,7 @@ class StatisticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final txProvider = Provider.of<TransactionProvider>(context);
-    final currencyFormat = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
+    final currencyFormat = NumberFormat.currency(symbol: txProvider.selectedCurrency, decimalDigits: 2);
     
     final totalIncome = txProvider.totalIncome;
     final totalExpense = txProvider.totalExpense;

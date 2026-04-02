@@ -61,10 +61,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             const SizedBox(height: 20),
             TextField(
               controller: _amountController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Amount',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.attach_money),
+                border: const OutlineInputBorder(),
+                prefixText: '${Provider.of<TransactionProvider>(context, listen: false).selectedCurrency} ',
               ),
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/transaction_provider.dart';
 import 'add_transaction_screen.dart';
-import 'statistics_screen.dart';
+//import 'statistics_screen.dart';
 import 'consultant_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,22 +12,87 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final txProvider = Provider.of<TransactionProvider>(context);
-    final currencyFormat = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
+    final currencyFormat = NumberFormat.currency(symbol: txProvider.selectedCurrency, decimalDigits: 2);
     final dateFormat = DateFormat('MMM dd, yyyy');
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Text('Money management'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bar_chart_rounded),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const StatisticsScreen()),
-              );
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.currency_exchange_rounded),
+            tooltip: 'Change Currency',
+            onSelected: (String value) async {
+              if (value == 'auto') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Detecting location...'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+                final result = await txProvider.detectCurrencyFromLocation();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result),
+                      duration: const Duration(seconds: 3),
+                    ),
+                  );
+                }
+              } else if (value == 'search') {
+                _showCountrySearchDialog(context, txProvider);
+              } else {
+                txProvider.updateCurrency(value);
+              }
             },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: '\$',
+                child: Text('USD (\$)'),
+              ),
+              const PopupMenuItem<String>(
+                value: '€',
+                child: Text('EUR (€)'),
+              ),
+              const PopupMenuItem<String>(
+                value: '£',
+                child: Text('GBP (£)'),
+              ),
+              const PopupMenuItem<String>(
+                value: '¥',
+                child: Text('JPY/CNY (¥)'),
+              ),
+              const PopupMenuItem<String>(
+                value: '₹',
+                child: Text('INR (₹)'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'Br',
+                child: Text('ETB (Br)'),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem<String>(
+                value: 'auto',
+                child: Row(
+                  children: [
+                    Icon(Icons.my_location, size: 18, color: Colors.black54),
+                    SizedBox(width: 8),
+                    Text('Auto Detect'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'search',
+                child: Row(
+                  children: [
+                    Icon(Icons.search, size: 18, color: Colors.black54),
+                    SizedBox(width: 8),
+                    Text('Search Country'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -107,21 +172,42 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
             
             // Recent Transactions Title
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Recent Transactions',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.5,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
+             Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+  child: Row(
+    children: [
+      Expanded(
+        child: Text(
+          'Recent Transactions',
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.5,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      InkWell(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
+    );
+  },
+  borderRadius: BorderRadius.circular(20),
+  child: Container(
+    width: 40,
+    height: 40,
+    decoration: BoxDecoration(
+      color: Colors.black,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: const Icon(Icons.add_rounded, size: 22, color: Colors.white),
+  ),
+),
+    ],
+  ),
+),
             
             // Minimalistic Transaction List with zero shadows
             Expanded(
@@ -209,9 +295,9 @@ class HomeScreen extends StatelessWidget {
             
             // Consultant Button at the bottom
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
               child: SizedBox(
-                width: double.infinity,
+                width: 250,
                 height: 56,
                 child: ElevatedButton.icon(
                   onPressed: () {
@@ -220,7 +306,7 @@ class HomeScreen extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => const ConsultantScreen()),
                     );
                   },
-                  icon: const Icon(Icons.psychology_rounded, size: 24),
+                  icon: const Icon(Icons.psychology_rounded, size: 20),
                   label: const Text(
                     'Get Consultant Advice',
                     style: TextStyle(
@@ -242,19 +328,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        elevation: 0,
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
-          );
-        },
-        child: const Icon(Icons.add_rounded, size: 28),
       ),
     );
   }
@@ -302,6 +375,154 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+
+  void _showCountrySearchDialog(BuildContext context, TransactionProvider txProvider) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return _CountrySearchDialog(txProvider: txProvider);
+      },
+    );
+  }
+}
+
+class _CountrySearchDialog extends StatefulWidget {
+  final TransactionProvider txProvider;
+  const _CountrySearchDialog({required this.txProvider});
+
+  @override
+  State<_CountrySearchDialog> createState() => _CountrySearchDialogState();
+}
+
+class _CountrySearchDialogState extends State<_CountrySearchDialog> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final countries = widget.txProvider.searchableCountries;
+    final filtered = _query.isEmpty
+        ? countries
+        : countries.where((c) =>
+            c['name']!.toLowerCase().contains(_query.toLowerCase()) ||
+            c['code']!.toLowerCase().contains(_query.toLowerCase()) ||
+            c['symbol']!.toLowerCase().contains(_query.toLowerCase())
+          ).toList();
+
+    return Dialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 12, 0),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Search Country',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+          // Search field
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: TextField(
+              autofocus: true,
+              onChanged: (val) => setState(() => _query = val),
+              decoration: InputDecoration(
+                hintText: 'Search by country name...',
+                prefixIcon: const Icon(Icons.search, size: 20),
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+          // Results
+          Flexible(
+            child: filtered.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.all(32),
+                    child: Text('No countries found', style: TextStyle(color: Colors.black45)),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filtered.length,
+                    itemBuilder: (context, index) {
+                      final country = filtered[index];
+                      final isSelected = widget.txProvider.selectedCurrency == country['symbol'];
+                      return ListTile(
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Colors.black.withValues(alpha: 0.08)
+                                : Colors.grey.shade100,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              country['symbol']!,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                                color: isSelected ? Colors.black : Colors.black54,
+                              ),
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          country['name']!,
+                          style: TextStyle(
+                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                        subtitle: Text(
+                          country['code']!,
+                          style: const TextStyle(fontSize: 12, color: Colors.black38),
+                        ),
+                        trailing: isSelected
+                            ? const Icon(Icons.check_circle, color: Colors.black, size: 20)
+                            : null,
+                        onTap: () {
+                          widget.txProvider.updateCurrency(country['symbol']!);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Currency set to ${country['symbol']} (${country['name']})'),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 }

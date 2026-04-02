@@ -30,19 +30,6 @@ class _MainDashboardState extends State<MainDashboard> {
         index: _currentIndex,
         children: _pages,
       ),
-      floatingActionButton: FloatingActionButton(
-        elevation: 2,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
-          );
-        },
-        child: const Icon(CupertinoIcons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
