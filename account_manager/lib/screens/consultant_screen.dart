@@ -498,13 +498,20 @@ class _ConsultantScreenState extends State<ConsultantScreen>
                     chatProvider.isLoading ? const Color(0xFFE5E7EB) : null,
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                Icons.arrow_upward_rounded,
-                color: chatProvider.isLoading
-                    ? const Color(0xFF9CA3AF)
-                    : Colors.white,
-                size: 22,
-              ),
+              child: chatProvider.isLoading 
+                ? const SizedBox(
+                    width: 20, 
+                    height: 20, 
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF9CA3AF)),
+                    )
+                  )
+                : const Icon(
+                    Icons.arrow_upward_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
             ),
           ),
         ],

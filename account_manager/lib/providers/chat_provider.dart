@@ -8,6 +8,7 @@ import '../services/chat_service.dart';
 class ChatProvider with ChangeNotifier {
   List<ChatMessage> _messages = [];
   bool _isLoading = false;
+  bool _isSending = false; // Guard to prevent multiple simultaneous requests
 
   List<ChatMessage> get messages => _messages;
   bool get isLoading => _isLoading;
@@ -46,6 +47,12 @@ class ChatProvider with ChangeNotifier {
     required double totalExpense,
     required String currency,
   }) async {
+    if (_isSending) {
+      debugPrint('DEBUG: sendMessage called while already sending. Ignoring.');
+      return;
+    }
+    
+    _isSending = true;
     // Add user message
     final userMessage = ChatMessage(
       role: 'user',
@@ -91,6 +98,7 @@ class ChatProvider with ChangeNotifier {
     );
     _messages.add(assistantMessage);
     _isLoading = false;
+    _isSending = false; // Release the guard
     notifyListeners();
     
     // IMPORTANT: Only save history if it wasn't an API error

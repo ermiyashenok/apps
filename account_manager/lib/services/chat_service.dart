@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/transaction.dart';
 
@@ -8,7 +9,7 @@ class ChatService {
   // ============================================================
 
   static const String _baseUrl =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+      'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
 
   /// Builds the constrained system prompt with transaction context.
   static String _buildSystemPrompt({
@@ -76,7 +77,7 @@ Number of Transactions: ${transactions.length}
   }) async {
     // Check if key is still placeholder
     if (_apiKey == 'YOUR_GEMINI_API_KEY_HERE') {
-      return 'Please add your Gemini API key in lib/services/chat_service.dart to start chatting!\n\nGet a free key at: https://aistudio.google.com/apikey';
+      return 'Please add your Gemini API key in lib/services/chat_service.dart to start chatting!\n\nGet a key at: https://aistudio.google.com/apikey';
     }
 
     final systemPrompt = _buildSystemPrompt(
@@ -86,6 +87,9 @@ Number of Transactions: ${transactions.length}
       totalExpense: totalExpense,
       currency: currency,
     );
+
+    // Success: Log request for verification (Cleaner version)
+    debugPrint('DEBUG: Calling Gemini API at ${DateTime.now()} | Msg: "${userMessage.substring(0, userMessage.length > 10 ? 10 : userMessage.length)}..."');
 
     // Build conversation contents for Gemini API
     final List<Map<String, dynamic>> contents = [];
@@ -144,10 +148,15 @@ Number of Transactions: ${transactions.length}
         }
         return 'No response generated. Please try again.';
       } else {
+        // DETAILED ERROR LOGGING
+        debugPrint('DEBUG: API call failed with status: ${response.statusCode}');
+        debugPrint('DEBUG: Full error body: ${response.body}');
+        
         final errorData = jsonDecode(response.body);
-        final errorMsg =
-            errorData['error']?['message'] ?? 'Unknown error occurred';
-        return 'API Error: $errorMsg';
+        final errorDetail = errorData['error']?['message'] ?? 'Unknown error';
+        final errorCode = errorData['error']?['status'] ?? 'ERROR';
+        
+        return 'API Error ($errorCode): $errorDetail';
       }
     } catch (e) {
       return 'Connection error: Could not reach the AI service. Please check your internet connection and try again.';
