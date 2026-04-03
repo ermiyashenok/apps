@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'home_screen.dart';
 import 'calendar_screen.dart';
 import 'statistics_screen.dart';
-import 'add_transaction_screen.dart';
 
 class MainDashboard extends StatefulWidget {
   const MainDashboard({super.key});

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'providers/transaction_provider.dart';
+import 'providers/chat_provider.dart';
 import 'screens/main_dashboard.dart';
 
 void main() {
@@ -9,6 +10,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TransactionProvider()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
       child: const AccountManagerApp(),
     ),
