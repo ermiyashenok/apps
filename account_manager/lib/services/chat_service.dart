@@ -9,7 +9,7 @@ class ChatService {
   // ============================================================
 
   static const String _baseUrl =
-      'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
   /// Builds the constrained system prompt with transaction context.
   static String _buildSystemPrompt({
@@ -161,5 +161,27 @@ Number of Transactions: ${transactions.length}
     } catch (e) {
       return 'Connection error: Could not reach the AI service. Please check your internet connection and try again.';
     }
+  }
+
+  /// Specialized method for getting a brief financial status review.
+  static Future<String> getFinancialReview({
+    required List<Transaction> transactions,
+    required double totalBalance,
+    required double totalIncome,
+    required double totalExpense,
+    required String currency,
+  }) async {
+    const String userMessage = "Give me a quick financial review based on my stats. Keep it very short, encouraging, and highlight one area I can improve on.";
+    
+    // We don't need persistent history for a one-off stat review
+    return sendMessage(
+      userMessage: userMessage,
+      conversationHistory: [],
+      transactions: transactions,
+      totalBalance: totalBalance,
+      totalIncome: totalIncome,
+      totalExpense: totalExpense,
+      currency: currency,
+    );
   }
 }
