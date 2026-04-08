@@ -21,129 +21,68 @@ class StatisticsScreen extends StatelessWidget {
     final totalBalance = txProvider.totalBalance;
     final hasData = totalIncome > 0 || totalExpense > 0;
 
+    final expenseBreakdown = txProvider.getCategoryBreakdown(isIncome: false);
+    final incomeBreakdown = txProvider.getCategoryBreakdown(isIncome: true);
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
-        title: const Text('Financial Stats', style: TextStyle(fontWeight: FontWeight.bold)),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
+        title: const Text('Insights', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 24, letterSpacing: -1.0)),
+        centerTitle: false,
       ),
       body: !hasData 
         ? Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.pie_chart_outline, size: 80, color: Colors.grey[400]),
+                Icon(Icons.analytics_outlined, size: 80, color: Colors.grey[300]),
                 const SizedBox(height: 16),
-                const Text(
-                  'No data to show yet', 
-                  style: TextStyle(fontSize: 18, color: Colors.grey, fontWeight: FontWeight.w500)
+                Text(
+                  'No transactions to analyze', 
+                  style: TextStyle(fontSize: 16, color: Colors.grey[500], fontWeight: FontWeight.w500)
                 ),
               ],
             ),
           )
         : SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Summary Section
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildSummaryCard(
-                        'Total Balance', 
-                        currencyFormat.format(totalBalance), 
-                        totalBalance >= 0 ? Colors.blue[700]! : Colors.orange[700]!,
-                        Icons.account_balance_wallet_outlined,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildSummaryCard(
-                        'Income', 
-                        currencyFormat.format(totalIncome), 
-                        Colors.teal[600]!,
-                        Icons.trending_up,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildSummaryCard(
-                        'Expense', 
-                        currencyFormat.format(totalExpense), 
-                        Colors.redAccent[400]!,
-                        Icons.trending_down,
-                      ),
-                    ),
-                  ],
-                ),
-                
-                const SizedBox(height: 32),
-                const Text(
-                  'Spending Breakdowns',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 24),
-                
-                // Chart Section
                 Container(
-                  height: 300,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(color: Colors.black.withOpacity(0.04)),
                   ),
-                  child: Stack(
-                    alignment: Alignment.center,
+                  child: Column(
                     children: [
-                      PieChart(
-                        PieChartData(
-                          sectionsSpace: 5,
-                          centerSpaceRadius: 70,
-                          startDegreeOffset: -90,
-                          sections: [
-                            if (totalIncome > 0)
-                              PieChartSectionData(
-                                color: Colors.teal[600],
-                                value: totalIncome,
-                                title: '',
-                                radius: 25,
-                              ),
-                            if (totalExpense > 0)
-                              PieChartSectionData(
-                                color: Colors.redAccent[400],
-                                value: totalExpense,
-                                title: '',
-                                radius: 25,
-                              ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Net',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                          _buildMiniStat('Income', totalIncome, const Color(0xFF10B981), currencyFormat),
+                          Container(height: 40, width: 1, color: Colors.black.withOpacity(0.05)),
+                          _buildMiniStat('Expense', totalExpense, const Color(0xFFF43F5E), currencyFormat),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      const Divider(height: 1),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Net Balance',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black54),
                           ),
                           Text(
                             currencyFormat.format(totalBalance),
-                            style: const TextStyle(
-                              fontSize: 18, 
-                              fontWeight: FontWeight.bold,
+                            style: TextStyle(
+                              fontSize: 20, 
+                              fontWeight: FontWeight.w800,
+                              color: totalBalance >= 0 ? Colors.black : const Color(0xFFF43F5E),
                             ),
                           ),
                         ],
@@ -152,98 +91,121 @@ class StatisticsScreen extends StatelessWidget {
                   ),
                 ),
                 
-                const SizedBox(height: 24),
-                // Custom Legend
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLegendItem('Income', Colors.teal[600]!),
-                    const SizedBox(width: 24),
-                    _buildLegendItem('Expense', Colors.redAccent[400]!),
-                  ],
+                const SizedBox(height: 32),
+                const Text(
+                  'Spending Breakdowns',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, letterSpacing: -0.5),
                 ),
+                const SizedBox(height: 20),
+                
+                // Expense Category Breakdown Card
+                if (expenseBreakdown.isNotEmpty) 
+                  _buildBreakdownCard('Expenses', expenseBreakdown, currencyFormat, const Color(0xFFF43F5E)),
 
-                const SizedBox(height: 40),
+                const SizedBox(height: 24),
+
+                // Income Category Breakdown Card
+                if (incomeBreakdown.isNotEmpty)
+                  _buildBreakdownCard('Income Sources', incomeBreakdown, currencyFormat, const Color(0xFF10B981)),
+                
+                const SizedBox(height: 32),
                 
                 // AI Review Section
                 const AiReviewSection(),
                 
-                const SizedBox(height: 40),
+                const SizedBox(height: 48),
               ],
             ),
           ),
     );
   }
 
-  Widget _buildSummaryCard(String title, String amount, Color color, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.1), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(height: 12),
-          Text(
-            title, 
-            style: TextStyle(color: Colors.grey[600], fontSize: 13, fontWeight: FontWeight.w500)
-          ),
-          const SizedBox(height: 4),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              amount, 
-              style: TextStyle(
-                fontSize: 22, 
-                fontWeight: FontWeight.bold, 
-                color: color.darken(0.1) // Placeholder for color tweak if needed
-              )
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLegendItem(String label, Color color) {
-    return Row(
+  Widget _buildMiniStat(String label, double amount, Color color, NumberFormat format) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 8),
         Text(
           label,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black87),
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.4)),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          format.format(amount),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: color),
         ),
       ],
     );
   }
-}
 
-// Extension to darken colors slightly for text
-extension ColorUtils on Color {
-  Color darken([double amount = .1]) {
-    assert(amount >= 0 && amount <= 1);
-    final hsl = HSLColor.fromColor(this);
-    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
-    return hslDark.toColor();
+  Widget _buildBreakdownCard(String title, Map<String, double> data, NumberFormat format, Color themeColor) {
+    final sortedKeys = data.keys.toList()..sort((a, b) => data[b]!.compareTo(data[a]!));
+    final total = data.values.fold(0.0, (a, b) => a + b);
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: Colors.black.withOpacity(0.04)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black),
+          ),
+          const SizedBox(height: 24),
+          ...sortedKeys.map((category) {
+            final amount = data[category]!;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: themeColor.withOpacity(0.05),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          TransactionProvider.getCategoryIcon(category),
+                          size: 16,
+                          color: themeColor,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          category,
+                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                        ),
+                      ),
+                      Text(
+                        format.format(amount),
+                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: amount / total,
+                      backgroundColor: themeColor.withOpacity(0.05),
+                      valueColor: AlwaysStoppedAnimation<Color>(themeColor.withOpacity(0.7)),
+                      minHeight: 6,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ],
+      ),
+    );
   }
 }
 

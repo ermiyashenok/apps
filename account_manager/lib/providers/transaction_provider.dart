@@ -9,7 +9,36 @@ class TransactionProvider with ChangeNotifier {
   List<Transaction> _transactions = [];
   String _selectedCurrency = '\$';
 
+  static const List<Map<String, dynamic>> incomeCategories = [
+    {'name': 'Salary', 'icon': Icons.payments},
+    {'name': 'Gift', 'icon': Icons.card_giftcard},
+    {'name': 'Investment', 'icon': Icons.trending_up},
+    {'name': 'Freelance', 'icon': Icons.work},
+    {'name': 'Other', 'icon': Icons.more_horiz},
+  ];
+
+  static const List<Map<String, dynamic>> expenseCategories = [
+    {'name': 'Food', 'icon': Icons.restaurant},
+    {'name': 'Transport', 'icon': Icons.directions_car},
+    {'name': 'Rent', 'icon': Icons.home},
+    {'name': 'Shopping', 'icon': Icons.shopping_bag},
+    {'name': 'Entertainment', 'icon': Icons.movie},
+    {'name': 'Health', 'icon': Icons.medical_services},
+    {'name': 'Utilities', 'icon': Icons.lightbulb},
+    {'name': 'Other', 'icon': Icons.more_horiz},
+  ];
+
   String get selectedCurrency => _selectedCurrency;
+
+  static IconData getCategoryIcon(String category) {
+    for (var cat in incomeCategories) {
+      if (cat['name'] == category) return cat['icon'];
+    }
+    for (var cat in expenseCategories) {
+      if (cat['name'] == category) return cat['icon'];
+    }
+    return Icons.more_horiz;
+  }
 
   TransactionProvider() {
     _loadTransactions();
@@ -217,5 +246,13 @@ class TransactionProvider with ChangeNotifier {
     _transactions.removeWhere((tx) => tx.id == id);
     _saveTransactions();
     notifyListeners();
+  }
+
+  Map<String, double> getCategoryBreakdown({required bool isIncome}) {
+    final Map<String, double> breakdown = {};
+    for (var tx in _transactions.where((tx) => tx.isIncome == isIncome)) {
+      breakdown[tx.category] = (breakdown[tx.category] ?? 0) + tx.amount;
+    }
+    return breakdown;
   }
 }

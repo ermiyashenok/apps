@@ -242,7 +242,7 @@ class HomeScreen extends StatelessWidget {
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
-                                  tx.isIncome ? Icons.south_west_rounded : Icons.north_east_rounded,
+                                  TransactionProvider.getCategoryIcon(tx.category),
                                   color: tx.isIncome ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
                                   size: 20,
                                 ),
@@ -252,21 +252,48 @@ class HomeScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      tx.comment,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          tx.category,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        if (tx.comment.isNotEmpty && tx.comment != 'No comment') ...[
+                                          const SizedBox(width: 8),
+                                          Container(
+                                            width: 4,
+                                            height: 4,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.black26,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              tx.comment,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14,
+                                                color: Colors.black.withValues(alpha: 0.4),
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       dateFormat.format(tx.date),
                                       style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 12,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.black.withValues(alpha: 0.4),
+                                        color: Colors.black.withValues(alpha: 0.3),
                                       ),
                                     ),
                                   ],
