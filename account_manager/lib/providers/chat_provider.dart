@@ -55,7 +55,7 @@ class ChatProvider with ChangeNotifier {
     _isSending = true;
     // Add user message
     final userMessage = ChatMessage(
-      role: 'user',
+      role: MessageRole.user,
       content: text,
       timestamp: DateTime.now(),
     );
@@ -67,7 +67,7 @@ class ChatProvider with ChangeNotifier {
     // Build conversation history for API context
     final conversationHistory = _messages
         .map((msg) => {
-              'role': msg.role,
+              'role': msg.role.name,
               'content': msg.content,
             })
         .toList();
@@ -92,7 +92,7 @@ class ChatProvider with ChangeNotifier {
 
     // Add assistant response
     final assistantMessage = ChatMessage(
-      role: 'assistant',
+      role: MessageRole.assistant,
       content: response,
       timestamp: DateTime.now(),
     );

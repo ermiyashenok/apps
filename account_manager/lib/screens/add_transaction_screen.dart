@@ -43,7 +43,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       id: DateTime.now().toString(),
       amount: enteredAmount,
       date: DateTime.now(),
-      isIncome: _isIncome,
+      type: _isIncome ? TransactionType.income : TransactionType.expense,
       comment: _commentController.text.isEmpty ? 'No comment' : _commentController.text,
       category: _selectedCategory,
     );
