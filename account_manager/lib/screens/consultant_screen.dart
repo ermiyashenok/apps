@@ -18,7 +18,7 @@ class _ConsultantScreenState extends State<ConsultantScreen>
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
 
-  static const _accentColor = Color(0xFF6366F1);
+  // We'll use theme colors in build()
   static const _userBubbleColor = Color(0xFF111827);
   static const _aiBubbleColor = Color(0xFFF3F4F6);
 
@@ -88,8 +88,11 @@ class _ConsultantScreenState extends State<ConsultantScreen>
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.secondary,
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -145,15 +148,18 @@ class _ConsultantScreenState extends State<ConsultantScreen>
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.secondary,
+                    Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF6366F1).withValues(alpha: 0.3),
+                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
@@ -335,8 +341,11 @@ class _ConsultantScreenState extends State<ConsultantScreen>
                       width: 16,
                       height: 16,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).colorScheme.secondary,
+                            Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(5),
                       ),
@@ -349,7 +358,7 @@ class _ConsultantScreenState extends State<ConsultantScreen>
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: _accentColor.withValues(alpha: 0.8),
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                   ],
@@ -421,7 +430,7 @@ class _ConsultantScreenState extends State<ConsultantScreen>
           width: 8,
           height: 8,
           decoration: BoxDecoration(
-            color: _accentColor.withValues(alpha: 0.3 + (value * 0.4)),
+            color: Theme.of(context).colorScheme.secondary.withOpacity(0.3 + (value * 0.4)),
             shape: BoxShape.circle,
           ),
         );
@@ -489,8 +498,11 @@ class _ConsultantScreenState extends State<ConsultantScreen>
               decoration: BoxDecoration(
                 gradient: chatProvider.isLoading
                     ? null
-                    : const LinearGradient(
-                        colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                    : LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.secondary,
+                          Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),

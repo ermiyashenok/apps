@@ -192,12 +192,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                               width: 56,
                               decoration: BoxDecoration(
                                 color: isSelected 
-                                    ? const Color(0xFF6366F1).withOpacity(0.1) 
+                                    ? Theme.of(context).colorScheme.secondaryContainer
                                     : Colors.white,
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
                                   color: isSelected 
-                                      ? const Color(0xFF6366F1) 
+                                      ? Theme.of(context).colorScheme.secondary
                                       : const Color(0xFFE5E7EB),
                                   width: 2,
                                 ),
@@ -205,7 +205,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                               child: Icon(
                                 cat['icon'],
                                 color: isSelected 
-                                    ? const Color(0xFF6366F1) 
+                                    ? Theme.of(context).colorScheme.secondary
                                     : const Color(0xFF6B7280),
                                 size: 24,
                               ),
@@ -217,7 +217,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                 fontSize: 11,
                                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                                 color: isSelected 
-                                    ? const Color(0xFF6366F1) 
+                                    ? Theme.of(context).colorScheme.secondary
                                     : const Color(0xFF6B7280),
                               ),
                               textAlign: TextAlign.center,
@@ -259,7 +259,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 2),
                       ),
                     ),
                   ),

@@ -27,9 +27,11 @@ class AccountManagerApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF000000), // Pure Black for max contrast
-          primary: const Color(0xFF111827),
-          secondary: const Color(0xFF6366F1), // Rich Indigo accent
+          seedColor: const Color(0xFF7C3AED), // Subtle Purple seed
+          primary: const Color(0xFF111827), // Keep primary dark for premium feel
+          secondary: const Color(0xFF7C3AED), // Main purple accent
+          secondaryContainer: const Color(0xFFF5F3FF), // Very subtle purple for button backgrounds
+          onSecondaryContainer: const Color(0xFF7C3AED), // Purple text/icons on subtle background
           surface: Colors.white,
         ),
         scaffoldBackgroundColor: const Color(0xFFFCFCFD), // Ultra crisp almost-white

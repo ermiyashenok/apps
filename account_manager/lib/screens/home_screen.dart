@@ -199,10 +199,10 @@ class HomeScreen extends StatelessWidget {
     width: 40,
     height: 40,
     decoration: BoxDecoration(
-      color: Colors.black,
+      color: Theme.of(context).colorScheme.secondaryContainer,
       borderRadius: BorderRadius.circular(20),
     ),
-    child: const Icon(Icons.add_rounded, size: 22, color: Colors.white),
+    child: Icon(Icons.add_rounded, size: 22, color: Theme.of(context).colorScheme.onSecondaryContainer),
   ),
 ),
     ],
@@ -343,8 +343,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                    foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
