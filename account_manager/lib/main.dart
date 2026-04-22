@@ -3,14 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'providers/transaction_provider.dart';
 import 'providers/chat_provider.dart';
-import 'screens/main_dashboard.dart';
+import 'providers/auth_provider.dart';
+import 'screens/auth_wrapper.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TransactionProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: const AccountManagerApp(),
     ),
@@ -27,14 +30,14 @@ class AccountManagerApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF7C3AED), // Subtle Purple seed
-          primary: const Color(0xFF111827), // Keep primary dark for premium feel
-          secondary: const Color(0xFF7C3AED), // Main purple accent
-          secondaryContainer: const Color(0xFFF5F3FF), // Very subtle purple for button backgrounds
-          onSecondaryContainer: const Color(0xFF7C3AED), // Purple text/icons on subtle background
+          seedColor: const Color(0xFF7C3AED),
+          primary: const Color(0xFF111827),
+          secondary: const Color(0xFF7C3AED),
+          secondaryContainer: const Color(0xFFF5F3FF),
+          onSecondaryContainer: const Color(0xFF7C3AED),
           surface: Colors.white,
         ),
-        scaffoldBackgroundColor: const Color(0xFFFCFCFD), // Ultra crisp almost-white
+        scaffoldBackgroundColor: const Color(0xFFFCFCFD),
         textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
@@ -56,7 +59,7 @@ class AccountManagerApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const MainDashboard(),
+      home: const AuthWrapper(),
       debugShowCheckedModeBanner: false,
     );
   }

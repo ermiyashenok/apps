@@ -5,6 +5,7 @@ import '../providers/transaction_provider.dart';
 import 'add_transaction_screen.dart';
 //import 'statistics_screen.dart';
 import 'consultant_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,6 +19,13 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.person_outline_rounded),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+          ),
+        ),
         title: const Text('Money management'),
         actions: [
           PopupMenuButton<String>(
