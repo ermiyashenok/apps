@@ -1,0 +1,185 @@
+[debug] [2026-04-21T14:28:13.391Z] [Firebase Plugin] Activating Firebase extension.
+[info] [Firebase Plugin] Checked firebase-tools, is up to date!
+[debug] [2026-04-21T14:28:16.660Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-21T14:28:16.689Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-21T14:28:16.691Z] > authorizing via signed-in user (ermi0343@gmail.com)
+[debug] [2026-04-21T14:28:16.698Z] Checked if tokens are valid: false, expires at: 1776781853610
+[debug] [2026-04-21T14:28:16.701Z] Checked if tokens are valid: false, expires at: 1776781853610
+[debug] [2026-04-21T14:28:16.702Z] > refreshing access token with scopes: []
+[debug] [2026-04-21T14:28:16.707Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-21T14:28:16.708Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-21T14:28:16.759Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting SQL Connect toolkit (version 3.4.5) on port 50001
+[debug] [2026-04-21T14:28:17.760Z] I0421 17:28:17.743449   12196 control.go:100] [projects/emulator/locations/emulator/services/apps 2fa9] UpdateResources(): done
+Main schema: sources: schema\schema.gql [1992B] 
+Connector "example": sources: example\mutations.gql [1243B] example\queries.gql [1801B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0421 17:28:17.743449   12196 control.go:100] [projects/emulator/locations/emulator/services/apps 2fa9] UpdateResources(): done\nMain schema: sources: schema\\schema.gql [1992B] \nConnector \"example\": sources: example\\mutations.gql [1243B] example\\queries.gql [1801B] \n"}}
+[debug] [2026-04-21T14:28:17.762Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-04-21T14:28:17.763Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-04-21T14:28:17.764Z] Starting SQL Connect Emulator with command {"binary":"C:\\Users\\ermi0\\.cache\\firebase\\emulators\\dataconnect-emulator-3.4.5.exe","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=c:\\Users\\ermi0\\flutter projects\\apps\\dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting SQL Connect Emulator with command {\"binary\":\"C:\\\\Users\\\\ermi0\\\\.cache\\\\firebase\\\\emulators\\\\dataconnect-emulator-3.4.5.exe\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: SQL Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"SQL Connect Emulator logging to \u001b[1mdataconnect-debug.log\u001b[22m"}}
+[debug] [2026-04-21T14:28:17.818Z] I0421 17:28:17.814322   16028 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0421 17:28:17.814322   16028 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-04-21T14:28:17.874Z] I0421 17:28:17.835540   16028 control.go:100] [projects/emulator/locations/emulator/services/apps 8894] UpdateResources(): done
+Main schema: sources: schema\schema.gql [1992B] 
+Connector "example": sources: example\mutations.gql [1243B] example\queries.gql [1801B] 
+I0421 17:28:17.857101   16028 codegen.go:101] [connector "example" dartSdk] Generating sources into "c:\\Users\\ermi0\\flutter projects\\apps\\account_manager\\lib\\dataconnect_generated"
+I0421 17:28:17.872615   16028 collector.go:107] schema extensions wrote into "c:\\Users\\ermi0\\flutter projects\\apps\\dataconnect\\.dataconnect\\schema"
+Generated sources: main\relation.gql [14318B] main\query.gql [5099B] main\mutation.gql [13679B] prelude.gql [82799B] main\implicit.gql [1261B] main\input.gql [28927B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0421 17:28:17.835540   16028 control.go:100] [projects/emulator/locations/emulator/services/apps 8894] UpdateResources(): done\nMain schema: sources: schema\\schema.gql [1992B] \nConnector \"example\": sources: example\\mutations.gql [1243B] example\\queries.gql [1801B] \nI0421 17:28:17.857101   16028 codegen.go:101] [connector \"example\" dartSdk] Generating sources into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\account_manager\\\\lib\\\\dataconnect_generated\"\nI0421 17:28:17.872615   16028 collector.go:107] schema extensions wrote into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\dataconnect\\\\.dataconnect\\\\schema\"\nGenerated sources: main\\relation.gql [14318B] main\\query.gql [5099B] main\\mutation.gql [13679B] prelude.gql [82799B] main\\implicit.gql [1261B] main\\input.gql [28927B] \n"}}
+[debug] [2026-04-21T14:28:17.876Z] I0421 17:28:17.876136   16028 collector.go:107] connector "example" dartSdk wrote into "c:\\Users\\ermi0\\flutter projects\\apps\\account_manager\\lib\\dataconnect_generated"
+Generated sources: list_user_reviews.dart [5172B] get_movie_by_id.dart [8364B] search_movie.dart [4743B] README.md [11557B] .guides/setup.md [756B] .guides/config.json [236B] create_movie.dart [3598B] upsert_user.dart [3044B] delete_review.dart [3463B] list_movies.dart [2718B] list_users.dart [2236B] generated.dart [2455B] .guides/usage.md [1181B] add_review.dart [3874B] 
+I0421 17:28:17.876136   16028 load.go:109] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0421 17:28:17.876136   16028 collector.go:107] connector \"example\" dartSdk wrote into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\account_manager\\\\lib\\\\dataconnect_generated\"\nGenerated sources: list_user_reviews.dart [5172B] get_movie_by_id.dart [8364B] search_movie.dart [4743B] README.md [11557B] .guides/setup.md [756B] .guides/config.json [236B] create_movie.dart [3598B] upsert_user.dart [3044B] delete_review.dart [3463B] list_movies.dart [2718B] list_users.dart [2236B] generated.dart [2455B] .guides/usage.md [1181B] add_review.dart [3874B] \nI0421 17:28:17.876136   16028 load.go:109] Finished reloading\n"}}
+[debug] [2026-04-21T14:28:18.081Z] I0421 17:28:17.914713   16028 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0421 17:28:17.914713   16028 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-04-21T14:28:18.167Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-04-21T14:28:18.169Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-21T14:28:18.208Z] [Firebase Plugin] User found:  ermi0343@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2026-04-21T14:28:18.214Z] Checked if tokens are valid: true, expires at: 1776785297169
+[debug] [2026-04-21T14:28:18.216Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-04-21T14:28:18.269Z] I0421 17:28:18.269661   16028 engine.go:209] [projects/emulator/locations/emulator/services/apps 8894] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0421 17:28:18.269661   16028 engine.go:209] [projects/emulator/locations/emulator/services/apps 8894] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
+[debug] [2026-04-21T14:28:19.084Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-04-21T14:28:19.085Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] [Firebase Plugin] Stopping SQL Connect toolkit
+[debug] [2026-04-22T06:29:03.059Z] [Firebase Plugin] Activating Firebase extension.
+[info] [Firebase Plugin] Checked firebase-tools, is up to date!
+[debug] [2026-04-22T06:29:07.152Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-22T06:29:07.157Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-22T06:29:07.158Z] > authorizing via signed-in user (ermi0343@gmail.com)
+[debug] [2026-04-22T06:29:07.165Z] Checked if tokens are valid: false, expires at: 1776785297169
+[debug] [2026-04-22T06:29:07.166Z] Checked if tokens are valid: false, expires at: 1776785297169
+[debug] [2026-04-22T06:29:07.167Z] > refreshing access token with scopes: []
+[debug] [2026-04-22T06:29:07.172Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-22T06:29:07.172Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-22T06:29:07.205Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting SQL Connect toolkit (version 3.4.5) on port 50001
+[debug] [2026-04-22T06:29:08.403Z] I0422 09:29:08.389570   18928 control.go:100] [projects/emulator/locations/emulator/services/apps 3fc6] UpdateResources(): done
+Main schema: sources: schema\schema.gql [1992B] 
+Connector "example": sources: example\mutations.gql [1243B] example\queries.gql [1801B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 09:29:08.389570   18928 control.go:100] [projects/emulator/locations/emulator/services/apps 3fc6] UpdateResources(): done\nMain schema: sources: schema\\schema.gql [1992B] \nConnector \"example\": sources: example\\mutations.gql [1243B] example\\queries.gql [1801B] \n"}}
+[debug] [2026-04-22T06:29:08.405Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-04-22T06:29:08.406Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-04-22T06:29:08.406Z] Starting SQL Connect Emulator with command {"binary":"C:\\Users\\ermi0\\.cache\\firebase\\emulators\\dataconnect-emulator-3.4.5.exe","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=c:\\Users\\ermi0\\flutter projects\\apps\\dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting SQL Connect Emulator with command {\"binary\":\"C:\\\\Users\\\\ermi0\\\\.cache\\\\firebase\\\\emulators\\\\dataconnect-emulator-3.4.5.exe\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: SQL Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"SQL Connect Emulator logging to \u001b[1mdataconnect-debug.log\u001b[22m"}}
+[debug] [2026-04-22T06:29:08.452Z] I0422 09:29:08.451594   13264 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 09:29:08.451594   13264 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-04-22T06:29:08.477Z] I0422 09:29:08.470878   13264 control.go:100] [projects/emulator/locations/emulator/services/apps 9a84] UpdateResources(): done
+Main schema: sources: schema\schema.gql [1992B] 
+Connector "example": sources: example\mutations.gql [1243B] example\queries.gql [1801B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 09:29:08.470878   13264 control.go:100] [projects/emulator/locations/emulator/services/apps 9a84] UpdateResources(): done\nMain schema: sources: schema\\schema.gql [1992B] \nConnector \"example\": sources: example\\mutations.gql [1243B] example\\queries.gql [1801B] \n"}}
+[debug] [2026-04-22T06:29:08.640Z] I0422 09:29:08.490289   13264 codegen.go:101] [connector "example" dartSdk] Generating sources into "c:\\Users\\ermi0\\flutter projects\\apps\\account_manager\\lib\\dataconnect_generated"
+I0422 09:29:08.504335   13264 collector.go:107] schema extensions wrote into "c:\\Users\\ermi0\\flutter projects\\apps\\dataconnect\\.dataconnect\\schema"
+Generated sources: main\input.gql [28927B] main\relation.gql [14318B] main\query.gql [5099B] main\mutation.gql [13679B] main\implicit.gql [1261B] prelude.gql [82799B] 
+I0422 09:29:08.508485   13264 collector.go:107] connector "example" dartSdk wrote into "c:\\Users\\ermi0\\flutter projects\\apps\\account_manager\\lib\\dataconnect_generated"
+Generated sources: add_review.dart [3874B] list_movies.dart [2718B] list_users.dart [2236B] list_user_reviews.dart [5172B] get_movie_by_id.dart [8364B] README.md [11557B] .guides/config.json [236B] create_movie.dart [3598B] upsert_user.dart [3044B] delete_review.dart [3463B] search_movie.dart [4743B] generated.dart [2455B] .guides/usage.md [1181B] .guides/setup.md [756B] 
+I0422 09:29:08.508485   13264 load.go:109] Finished reloading
+I0422 09:29:08.528321   13264 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 09:29:08.490289   13264 codegen.go:101] [connector \"example\" dartSdk] Generating sources into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\account_manager\\\\lib\\\\dataconnect_generated\"\nI0422 09:29:08.504335   13264 collector.go:107] schema extensions wrote into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\dataconnect\\\\.dataconnect\\\\schema\"\nGenerated sources: main\\input.gql [28927B] main\\relation.gql [14318B] main\\query.gql [5099B] main\\mutation.gql [13679B] main\\implicit.gql [1261B] prelude.gql [82799B] \nI0422 09:29:08.508485   13264 collector.go:107] connector \"example\" dartSdk wrote into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\account_manager\\\\lib\\\\dataconnect_generated\"\nGenerated sources: add_review.dart [3874B] list_movies.dart [2718B] list_users.dart [2236B] list_user_reviews.dart [5172B] get_movie_by_id.dart [8364B] README.md [11557B] .guides/config.json [236B] create_movie.dart [3598B] upsert_user.dart [3044B] delete_review.dart [3463B] search_movie.dart [4743B] generated.dart [2455B] .guides/usage.md [1181B] .guides/setup.md [756B] \nI0422 09:29:08.508485   13264 load.go:109] Finished reloading\nI0422 09:29:08.528321   13264 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-04-22T06:29:08.828Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-04-22T06:29:08.830Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-22T06:29:08.903Z] [Firebase Plugin] User found:  ermi0343@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2026-04-22T06:29:08.920Z] Checked if tokens are valid: true, expires at: 1776842947832
+[debug] [2026-04-22T06:29:08.933Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-04-22T06:29:09.029Z] I0422 09:29:08.880290   13264 engine.go:209] [projects/emulator/locations/emulator/services/apps 9a84] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 09:29:08.880290   13264 engine.go:209] [projects/emulator/locations/emulator/services/apps 9a84] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
+[debug] [2026-04-22T06:29:09.918Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-04-22T06:29:09.918Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] [Firebase Plugin] Stopping SQL Connect toolkit
+[debug] [2026-04-22T06:39:41.518Z] [Firebase Plugin] Activating Firebase extension.
+[info] [Firebase Plugin] Checked firebase-tools, is up to date!
+[debug] [2026-04-22T06:39:44.781Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-22T06:39:44.790Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-22T06:39:44.792Z] > authorizing via signed-in user (ermi0343@gmail.com)
+[debug] [2026-04-22T06:39:44.801Z] Checked if tokens are valid: true, expires at: 1776842947832
+[debug] [2026-04-22T06:39:44.801Z] Checked if tokens are valid: true, expires at: 1776842947832
+[debug] [2026-04-22T06:39:44.804Z] [Firebase Plugin] User found:  ermi0343@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2026-04-22T06:39:44.808Z] Checked if tokens are valid: true, expires at: 1776842947832
+[debug] [2026-04-22T06:39:44.812Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-04-22T06:39:44.873Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting SQL Connect toolkit (version 3.4.5) on port 50001
+[debug] [2026-04-22T06:39:46.169Z] I0422 09:39:46.150766   19392 control.go:100] [projects/emulator/locations/emulator/services/apps 825a] UpdateResources(): done
+Main schema: sources: schema\schema.gql [1992B] 
+Connector "example": sources: example\mutations.gql [1243B] example\queries.gql [1801B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 09:39:46.150766   19392 control.go:100] [projects/emulator/locations/emulator/services/apps 825a] UpdateResources(): done\nMain schema: sources: schema\\schema.gql [1992B] \nConnector \"example\": sources: example\\mutations.gql [1243B] example\\queries.gql [1801B] \n"}}
+[debug] [2026-04-22T06:39:46.172Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-04-22T06:39:46.172Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-04-22T06:39:46.173Z] Starting SQL Connect Emulator with command {"binary":"C:\\Users\\ermi0\\.cache\\firebase\\emulators\\dataconnect-emulator-3.4.5.exe","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=c:\\Users\\ermi0\\flutter projects\\apps\\dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting SQL Connect Emulator with command {\"binary\":\"C:\\\\Users\\\\ermi0\\\\.cache\\\\firebase\\\\emulators\\\\dataconnect-emulator-3.4.5.exe\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: SQL Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"SQL Connect Emulator logging to \u001b[1mdataconnect-debug.log\u001b[22m"}}
+[debug] [2026-04-22T06:39:46.533Z] I0422 09:39:46.252972   23080 load.go:31] Reloading schema and connectors...
+I0422 09:39:46.272129   23080 control.go:100] [projects/emulator/locations/emulator/services/apps 58ce] UpdateResources(): done
+Main schema: sources: schema\schema.gql [1992B] 
+Connector "example": sources: example\mutations.gql [1243B] example\queries.gql [1801B] 
+I0422 09:39:46.294428   23080 codegen.go:101] [connector "example" dartSdk] Generating sources into "c:\\Users\\ermi0\\flutter projects\\apps\\account_manager\\lib\\dataconnect_generated"
+I0422 09:39:46.306381   23080 collector.go:107] schema extensions wrote into "c:\\Users\\ermi0\\flutter projects\\apps\\dataconnect\\.dataconnect\\schema"
+Generated sources: main\mutation.gql [13679B] main\implicit.gql [1261B] prelude.gql [82799B] main\input.gql [28927B] main\relation.gql [14318B] main\query.gql [5099B] 
+I0422 09:39:46.309909   23080 collector.go:107] connector "example" dartSdk wrote into "c:\\Users\\ermi0\\flutter projects\\apps\\account_manager\\lib\\dataconnect_generated"
+Generated sources: search_movie.dart [4743B] README.md [11557B] .guides/config.json [236B] create_movie.dart [3598B] add_review.dart [3874B] delete_review.dart [3463B] list_user_reviews.dart [5172B] get_movie_by_id.dart [8364B] generated.dart [2455B] .guides/usage.md [1181B] .guides/setup.md [756B] upsert_user.dart [3044B] list_movies.dart [2718B] list_users.dart [2236B] 
+I0422 09:39:46.309909   23080 load.go:109] Finished reloading
+I0422 09:39:46.425456   23080 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 09:39:46.252972   23080 load.go:31] Reloading schema and connectors...\nI0422 09:39:46.272129   23080 control.go:100] [projects/emulator/locations/emulator/services/apps 58ce] UpdateResources(): done\nMain schema: sources: schema\\schema.gql [1992B] \nConnector \"example\": sources: example\\mutations.gql [1243B] example\\queries.gql [1801B] \nI0422 09:39:46.294428   23080 codegen.go:101] [connector \"example\" dartSdk] Generating sources into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\account_manager\\\\lib\\\\dataconnect_generated\"\nI0422 09:39:46.306381   23080 collector.go:107] schema extensions wrote into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\dataconnect\\\\.dataconnect\\\\schema\"\nGenerated sources: main\\mutation.gql [13679B] main\\implicit.gql [1261B] prelude.gql [82799B] main\\input.gql [28927B] main\\relation.gql [14318B] main\\query.gql [5099B] \nI0422 09:39:46.309909   23080 collector.go:107] connector \"example\" dartSdk wrote into \"c:\\\\Users\\\\ermi0\\\\flutter projects\\\\apps\\\\account_manager\\\\lib\\\\dataconnect_generated\"\nGenerated sources: search_movie.dart [4743B] README.md [11557B] .guides/config.json [236B] create_movie.dart [3598B] add_review.dart [3874B] delete_review.dart [3463B] list_user_reviews.dart [5172B] get_movie_by_id.dart [8364B] generated.dart [2455B] .guides/usage.md [1181B] .guides/setup.md [756B] upsert_user.dart [3044B] list_movies.dart [2718B] list_users.dart [2236B] \nI0422 09:39:46.309909   23080 load.go:109] Finished reloading\nI0422 09:39:46.425456   23080 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-04-22T06:39:47.146Z] I0422 09:39:47.144844   23080 engine.go:209] [projects/emulator/locations/emulator/services/apps 58ce] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 09:39:47.144844   23080 engine.go:209] [projects/emulator/locations/emulator/services/apps 58ce] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
+[debug] [2026-04-22T06:39:47.259Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-04-22T06:39:47.260Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2026-04-22T07:57:49.680Z] [Firebase Plugin] Value of process.env.MONOSPACE_ENV: undefined
+[debug] [2026-04-22T07:57:49.681Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-22T07:57:49.684Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-22T07:57:49.685Z] > authorizing via signed-in user (ermi0343@gmail.com)
+[debug] [2026-04-22T07:57:49.686Z] Checked if tokens are valid: false, expires at: 1776842947832
+[debug] [2026-04-22T07:57:49.686Z] Checked if tokens are valid: false, expires at: 1776842947832
+[debug] [2026-04-22T07:57:49.686Z] > refreshing access token with scopes: []
+[debug] [2026-04-22T07:57:49.689Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-22T07:57:49.689Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-22T07:57:49.696Z] [Firebase Plugin] Value of process.env.MONOSPACE_ENV: undefined
+[debug] [2026-04-22T07:57:49.696Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-22T07:57:49.697Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-22T07:57:49.697Z] > authorizing via signed-in user (ermi0343@gmail.com)
+[debug] [2026-04-22T07:57:49.698Z] Checked if tokens are valid: false, expires at: 1776842947832
+[debug] [2026-04-22T07:57:49.698Z] Checked if tokens are valid: false, expires at: 1776842947832
+[debug] [2026-04-22T07:57:49.698Z] > refreshing access token with scopes: []
+[debug] [2026-04-22T07:57:49.698Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-22T07:57:49.699Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-22T07:57:50.173Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-04-22T07:57:50.174Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-22T07:57:50.244Z] [Firebase Plugin] User found:  ermi0343@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2026-04-22T07:57:50.247Z] Checked if tokens are valid: true, expires at: 1776848269174
+[debug] [2026-04-22T07:57:50.249Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-04-22T07:57:50.268Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-04-22T07:57:50.269Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-22T07:57:50.290Z] [Firebase Plugin] User found:  ermi0343@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2026-04-22T07:57:50.291Z] Checked if tokens are valid: true, expires at: 1776848269269
+[debug] [2026-04-22T07:57:50.292Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-04-22T07:57:52.000Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-04-22T07:57:52.000Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2026-04-22T07:57:52.103Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-04-22T07:57:52.103Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2026-04-22T07:58:05.401Z] [Firebase Plugin] Received emulators started notification. Running detection.
+[debug] [2026-04-22T07:58:05.411Z] Found emulator hub locator: {"version":"15.15.0","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"pid":23408}
+[debug] [2026-04-22T07:58:05.412Z] >>> [apiv2][query] GET http://127.0.0.1:4400/emulators [none]
+[debug] [2026-04-22T07:58:05.451Z] <<< [apiv2][status] GET http://127.0.0.1:4400/emulators 200
+[debug] [2026-04-22T07:58:05.451Z] <<< [apiv2][body] GET http://127.0.0.1:4400/emulators {"hub":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"name":"hub","host":"127.0.0.1","port":4400},"logging":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"name":"logging","host":"127.0.0.1","port":4500},"dataconnect":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":9399},{"address":"::1","family":"IPv6","port":9399}],"name":"dataconnect","host":"127.0.0.1","port":9399,"pid":23972,"timeout":10000}}
+[debug] [2026-04-22T07:58:05.734Z] I0422 10:58:05.734537   23080 engine.go:209] [projects/emulator/locations/emulator/services/apps 58ce] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0422 10:58:05.734537   23080 engine.go:209] [projects/emulator/locations/emulator/services/apps 58ce] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
+[debug] [2026-04-22T07:58:13.276Z] Found emulator hub locator: {"version":"15.15.0","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"pid":23408}
+[debug] [2026-04-22T07:58:13.277Z] >>> [apiv2][query] GET http://127.0.0.1:4400/ [none]
+[debug] [2026-04-22T07:58:13.283Z] <<< [apiv2][status] GET http://127.0.0.1:4400/ 200
+[debug] [2026-04-22T07:58:13.284Z] <<< [apiv2][body] GET http://127.0.0.1:4400/ {"version":"15.15.0","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"pid":23408,"host":"127.0.0.1","port":4400}
+[debug] [2026-04-22T07:58:13.284Z] >>> [apiv2][query] POST http://127.0.0.1:4400/dataconnect/clearData [none]
+[debug] [2026-04-22T07:58:13.355Z] <<< [apiv2][status] POST http://127.0.0.1:4400/dataconnect/clearData 200
+[debug] [2026-04-22T07:58:13.355Z] <<< [apiv2][body] POST http://127.0.0.1:4400/dataconnect/clearData {"success":true}
+[debug] [2026-04-22T08:04:22.158Z] Found emulator hub locator: {"version":"15.15.0","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"pid":23408}
+[debug] [2026-04-22T08:04:22.159Z] >>> [apiv2][query] GET http://127.0.0.1:4400/ [none]
+[debug] [2026-04-22T08:04:22.165Z] <<< [apiv2][status] GET http://127.0.0.1:4400/ 200
+[debug] [2026-04-22T08:04:22.166Z] <<< [apiv2][body] GET http://127.0.0.1:4400/ {"version":"15.15.0","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"pid":23408,"host":"127.0.0.1","port":4400}
+[debug] [2026-04-22T08:04:22.166Z] >>> [apiv2][query] POST http://127.0.0.1:4400/dataconnect/clearData [none]
+[debug] [2026-04-22T08:04:22.221Z] <<< [apiv2][status] POST http://127.0.0.1:4400/dataconnect/clearData 200
+[debug] [2026-04-22T08:04:22.222Z] <<< [apiv2][body] POST http://127.0.0.1:4400/dataconnect/clearData {"success":true}
+[debug] [2026-04-22T08:15:02.120Z] [Firebase Plugin] Received emulators shutdown notification.
+[debug] [2026-04-22T08:15:02.123Z] [Firebase Plugin] Received emulators shutdown notification.
