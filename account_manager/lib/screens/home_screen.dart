@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const ProfileScreen()),
           ),
         ),
-        title: const Text('Money management'),
+        title: const Text('Account management'),
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.currency_exchange_rounded),

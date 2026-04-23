@@ -71,14 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 60),
                 // Logo or Icon
-                Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.secondary,
-                    borderRadius: BorderRadius.circular(20),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    'assets/logo.png',
+                    width: 64,
+                    height: 64,
+                    fit: BoxFit.cover,
                   ),
-                  child: const Icon(Icons.account_balance_wallet_rounded, color: Colors.white, size: 32),
                 ),
                 const SizedBox(height: 32),
                 Text(
