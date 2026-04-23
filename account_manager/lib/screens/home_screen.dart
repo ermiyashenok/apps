@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.person_outline_rounded),
+          icon: const Icon(Icons.settings_outlined),
           onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ProfileScreen()),

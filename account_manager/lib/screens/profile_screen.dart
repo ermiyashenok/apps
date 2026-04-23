@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/theme_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,7 +11,7 @@ class ProfileScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Profile Name'),
+        title: const Text('Edit Name'),
         content: TextField(
           controller: controller,
           decoration: const InputDecoration(hintText: "Enter your name"),
@@ -33,12 +34,13 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Profile Settings', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: const Text('Settings', style: TextStyle(fontWeight: FontWeight.w800)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -46,7 +48,7 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            // Avatar with Edit Button
+            // Avatar with Edit Button (Now using Settings Icon)
             Center(
               child: Stack(
                 children: [
@@ -59,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
                       border: Border.all(color: theme.colorScheme.secondary, width: 2),
                     ),
                     child: Icon(
-                      Icons.person_rounded,
+                      Icons.settings_rounded, // Changed to settings icon
                       size: 60,
                       color: theme.colorScheme.secondary,
                     ),
@@ -74,7 +76,7 @@ class ProfileScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: theme.colorScheme.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
+                          border: Border.all(color: theme.cardColor, width: 2),
                         ),
                         child: const Icon(Icons.edit_rounded, size: 16, color: Colors.white),
                       ),
@@ -86,17 +88,25 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               authProvider.displayName ?? 'User',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 24, 
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               authProvider.isGuest ? 'Guest User' : (authProvider.userEmail ?? ''),
-              style: TextStyle(color: Colors.black.withValues(alpha: 0.4), fontSize: 14),
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.5), 
+                fontSize: 14,
+              ),
             ),
             const SizedBox(height: 40),
             
             // Interactive Cards
             _buildActionCard(
+              context: context,
               icon: Icons.security_rounded,
               title: 'Account Status',
               subtitle: authProvider.isGuest ? 'Guest (Limited)' : 'Full Local Account',
@@ -106,7 +116,6 @@ class ProfileScreen extends StatelessWidget {
               color: Colors.blueAccent,
               onTap: () {
                 if (authProvider.isGuest) {
-                  // Show logout/upgrade prompt
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -116,9 +125,9 @@ class ProfileScreen extends StatelessWidget {
                         TextButton(onPressed: () => Navigator.pop(context), child: const Text('Maybe Later')),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context); // Close dialog
+                            Navigator.pop(context);
                             authProvider.logout();
-                            Navigator.pop(context); // Close profile
+                            Navigator.pop(context);
                           }, 
                           child: const Text('Log Out to Sign Up')
                         ),
@@ -129,7 +138,25 @@ class ProfileScreen extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
+            
+            // Dark Mode Toggle
             _buildActionCard(
+              context: context,
+              icon: themeProvider.isDarkMode ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+              title: 'Dark Mode',
+              subtitle: themeProvider.isDarkMode ? 'Dark mode enabled' : 'Light mode enabled',
+              trailing: Switch(
+                value: themeProvider.isDarkMode,
+                onChanged: (val) => themeProvider.toggleTheme(val),
+                activeColor: theme.colorScheme.secondary,
+              ),
+              color: themeProvider.isDarkMode ? Colors.purpleAccent : Colors.orangeAccent,
+              onTap: () => themeProvider.toggleTheme(!themeProvider.isDarkMode),
+            ),
+            const SizedBox(height: 16),
+            
+            _buildActionCard(
+              context: context,
               icon: Icons.notifications_none_rounded,
               title: 'Notifications',
               subtitle: authProvider.notificationsEnabled ? 'Push notifications active' : 'Notifications muted',
@@ -170,6 +197,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildActionCard({
+    required BuildContext context,
     required IconData icon, 
     required String title, 
     required String subtitle, 
@@ -177,14 +205,15 @@ class ProfileScreen extends StatelessWidget {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black.withOpacity(0.04)),
+          border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
         ),
         child: Row(
           children: [
@@ -201,8 +230,21 @@ class ProfileScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-                  Text(subtitle, style: TextStyle(color: Colors.black.withValues(alpha: 0.5), fontSize: 13)),
+                  Text(
+                    title, 
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700, 
+                      fontSize: 16,
+                      color: theme.colorScheme.onSurface,
+                    )
+                  ),
+                  Text(
+                    subtitle, 
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5), 
+                      fontSize: 13,
+                    )
+                  ),
                 ],
               ),
             ),
