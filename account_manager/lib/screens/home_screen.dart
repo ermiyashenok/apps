@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/transaction_provider.dart';
 import 'add_transaction_screen.dart';
-//import 'statistics_screen.dart';
 import 'consultant_screen.dart';
 import 'profile_screen.dart';
 
@@ -15,37 +14,35 @@ class HomeScreen extends StatelessWidget {
     final txProvider = Provider.of<TransactionProvider>(context);
     final currencyFormat = NumberFormat.currency(symbol: txProvider.selectedCurrency, decimalDigits: 2);
     final dateFormat = DateFormat('MMM dd, yyyy');
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.settings_outlined),
+          icon: Icon(Icons.settings_outlined, color: colorScheme.onSurface),
           onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ProfileScreen()),
           ),
         ),
-        title: const Text('Account management'),
+        title: Text('Account Management', style: TextStyle(color: colorScheme.onSurface, fontSize: 18, fontWeight: FontWeight.w600)),
+        centerTitle: true,
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.currency_exchange_rounded),
+            icon: Icon(Icons.currency_exchange_rounded, color: colorScheme.onSurface),
             tooltip: 'Change Currency',
+            color: colorScheme.surface,
             onSelected: (String value) async {
               if (value == 'auto') {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Detecting location...'),
-                    duration: Duration(seconds: 1),
-                  ),
+                  const SnackBar(content: Text('Detecting location...'), duration: Duration(seconds: 1)),
                 );
                 final result = await txProvider.detectCurrencyFromLocation();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(result),
-                      duration: const Duration(seconds: 3),
-                    ),
+                    SnackBar(content: Text(result), duration: const Duration(seconds: 3)),
                   );
                 }
               } else if (value == 'search') {
@@ -55,48 +52,30 @@ class HomeScreen extends StatelessWidget {
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: '\$',
-                child: Text('USD (\$)'),
-              ),
-              const PopupMenuItem<String>(
-                value: '€',
-                child: Text('EUR (€)'),
-              ),
-              const PopupMenuItem<String>(
-                value: '£',
-                child: Text('GBP (£)'),
-              ),
-              const PopupMenuItem<String>(
-                value: '¥',
-                child: Text('JPY/CNY (¥)'),
-              ),
-              const PopupMenuItem<String>(
-                value: '₹',
-                child: Text('INR (₹)'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'Br',
-                child: Text('ETB (Br)'),
-              ),
+              const PopupMenuItem<String>(value: '\$', child: Text('USD (\$)')),
+              const PopupMenuItem<String>(value: '€', child: Text('EUR (€)')),
+              const PopupMenuItem<String>(value: '£', child: Text('GBP (£)')),
+              const PopupMenuItem<String>(value: '¥', child: Text('JPY/CNY (¥)')),
+              const PopupMenuItem<String>(value: '₹', child: Text('INR (₹)')),
+              const PopupMenuItem<String>(value: 'Br', child: Text('ETB (Br)')),
               const PopupMenuDivider(),
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'auto',
                 child: Row(
                   children: [
-                    Icon(Icons.my_location, size: 18, color: Colors.black54),
-                    SizedBox(width: 8),
-                    Text('Auto Detect'),
+                    Icon(Icons.my_location, size: 18, color: colorScheme.onSurface.withValues(alpha: 0.7)),
+                    const SizedBox(width: 8),
+                    const Text('Auto Detect'),
                   ],
                 ),
               ),
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'search',
                 child: Row(
                   children: [
-                    Icon(Icons.search, size: 18, color: Colors.black54),
-                    SizedBox(width: 8),
-                    Text('Search Country'),
+                    Icon(Icons.search, size: 18, color: colorScheme.onSurface.withValues(alpha: 0.7)),
+                    const SizedBox(width: 8),
+                    const Text('Search Country'),
                   ],
                 ),
               ),
@@ -109,37 +88,50 @@ class HomeScreen extends StatelessWidget {
           children: [
             // Premium Unified Header Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Total Balance',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black54,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: colorScheme.secondaryContainer.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Total Balance',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSecondaryContainer,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
                   Text(
                     currencyFormat.format(txProvider.totalBalance),
-                    style: const TextStyle(
-                      fontSize: 48,
+                    style: TextStyle(
+                      fontSize: 52,
                       fontWeight: FontWeight.w800,
-                      letterSpacing: -2.0,
-                      color: Colors.black,
+                      letterSpacing: -2.5,
+                      color: colorScheme.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 36),
                   
                   // Incomes / Expenses Pill Header
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(color: Colors.black.withValues(alpha: 0.04)),
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(32),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark ? Colors.black26 : colorScheme.primary.withValues(alpha: 0.04),
+                          blurRadius: 24,
+                          offset: const Offset(0, 8),
+                        )
+                      ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -151,12 +143,13 @@ class HomeScreen extends StatelessWidget {
                             label: 'Income',
                             amount: txProvider.totalIncome,
                             format: currencyFormat,
+                            context: context,
                           ),
                         ),
                         Container(
-                          height: 40,
+                          height: 48,
                           width: 1,
-                          color: Colors.black.withValues(alpha: 0.06),
+                          color: colorScheme.onSurface.withValues(alpha: 0.1),
                         ),
                         Expanded(
                           child: Padding(
@@ -167,6 +160,7 @@ class HomeScreen extends StatelessWidget {
                               label: 'Expense',
                               amount: txProvider.totalExpense,
                               format: currencyFormat,
+                              context: context,
                             ),
                           ),
                         ),
@@ -177,56 +171,64 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             
             // Recent Transactions Title
-             Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-  child: Row(
-    children: [
-      Expanded(
-        child: Text(
-          'Recent Transactions',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.5,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      InkWell(
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
-    );
-  },
-  borderRadius: BorderRadius.circular(20),
-  child: Container(
-    width: 40,
-    height: 40,
-    decoration: BoxDecoration(
-      color: Theme.of(context).colorScheme.secondaryContainer,
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Icon(Icons.add_rounded, size: 22, color: Theme.of(context).colorScheme.onSecondaryContainer),
-  ),
-),
-    ],
-  ),
-),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Recent Transactions',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.5,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(Icons.add_rounded, size: 24, color: colorScheme.onPrimary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             
-            // Minimalistic Transaction List with zero shadows
+            // Minimalistic Transaction List
             Expanded(
               child: txProvider.transactions.isEmpty
                   ? Center(
-                      child: Text(
-                        'No transactions yet',
-                        style: TextStyle(color: Colors.black.withValues(alpha: 0.4), fontSize: 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.receipt_long_rounded, size: 64, color: colorScheme.onSurface.withValues(alpha: 0.1)),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No transactions yet',
+                            style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4), fontSize: 16),
+                          ),
+                        ],
                       ),
                     )
                   : ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 24),
                       itemCount: txProvider.transactions.length,
                       itemBuilder: (context, index) {
                         final tx = txProvider.transactions[index];
@@ -234,25 +236,31 @@ class HomeScreen extends StatelessWidget {
                           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: colorScheme.surface,
                             borderRadius: BorderRadius.circular(24),
-                            border: Border.all(color: Colors.black.withValues(alpha: 0.03)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isDark ? Colors.black12 : colorScheme.primary.withValues(alpha: 0.02),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
                           child: Row(
                             children: [
                               Container(
-                                width: 48,
-                                height: 48,
+                                width: 52,
+                                height: 52,
                                 decoration: BoxDecoration(
                                   color: tx.isIncome 
-                                      ? const Color(0xFF10B981).withValues(alpha: 0.1)
-                                      : const Color(0xFFF43F5E).withValues(alpha: 0.1),
-                                  shape: BoxShape.circle,
+                                      ? const Color(0xFF10B981).withValues(alpha: 0.12)
+                                      : const Color(0xFFF43F5E).withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: Icon(
                                   TransactionProvider.getCategoryIcon(tx.category),
                                   color: tx.isIncome ? const Color(0xFF10B981) : const Color(0xFFF43F5E),
-                                  size: 20,
+                                  size: 24,
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -264,10 +272,10 @@ class HomeScreen extends StatelessWidget {
                                       children: [
                                         Text(
                                           tx.category,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 16,
-                                            color: Colors.black,
+                                            color: colorScheme.onSurface,
                                           ),
                                         ),
                                         if (tx.comment.isNotEmpty && tx.comment != 'No comment') ...[
@@ -275,8 +283,8 @@ class HomeScreen extends StatelessWidget {
                                           Container(
                                             width: 4,
                                             height: 4,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.black26,
+                                            decoration: BoxDecoration(
+                                              color: colorScheme.onSurface.withValues(alpha: 0.3),
                                               shape: BoxShape.circle,
                                             ),
                                           ),
@@ -287,7 +295,7 @@ class HomeScreen extends StatelessWidget {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: 14,
-                                                color: Colors.black.withValues(alpha: 0.4),
+                                                color: colorScheme.onSurface.withValues(alpha: 0.5),
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -295,13 +303,13 @@ class HomeScreen extends StatelessWidget {
                                         ],
                                       ],
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 6),
                                     Text(
                                       dateFormat.format(tx.date),
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.black.withValues(alpha: 0.3),
+                                        color: colorScheme.onSurface.withValues(alpha: 0.4),
                                       ),
                                     ),
                                   ],
@@ -310,16 +318,18 @@ class HomeScreen extends StatelessWidget {
                               Text(
                                 '${tx.isIncome ? '+' : '-'}${currencyFormat.format(tx.amount)}',
                                 style: TextStyle(
-                                  color: tx.isIncome ? const Color(0xFF10B981) : Colors.black,
-                                  fontWeight: FontWeight.w700,
+                                  color: tx.isIncome ? const Color(0xFF10B981) : colorScheme.onSurface,
+                                  fontWeight: FontWeight.w800,
                                   letterSpacing: -0.5,
                                   fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              GestureDetector(
-                                onTap: () => txProvider.deleteTransaction(tx.id),
-                                child: Icon(Icons.delete_outline_rounded, color: Colors.black.withValues(alpha: 0.2), size: 20),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                onPressed: () => txProvider.deleteTransaction(tx.id),
+                                icon: Icon(Icons.delete_outline_rounded, color: colorScheme.onSurface.withValues(alpha: 0.2), size: 20),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
                               ),
                             ],
                           ),
@@ -330,9 +340,9 @@ class HomeScreen extends StatelessWidget {
             
             // Consultant Button at the bottom
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
               child: SizedBox(
-                width: 250,
+                width: double.infinity,
                 height: 56,
                 child: ElevatedButton.icon(
                   onPressed: () {
@@ -341,7 +351,7 @@ class HomeScreen extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => const ConsultantScreen()),
                     );
                   },
-                  icon: const Icon(Icons.psychology_rounded, size: 20),
+                  icon: const Icon(Icons.psychology_rounded, size: 22),
                   label: const Text(
                     'Get Consultant Advice',
                     style: TextStyle(
@@ -351,8 +361,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-                    foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                    backgroundColor: colorScheme.secondaryContainer,
+                    foregroundColor: colorScheme.onSecondaryContainer,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -373,19 +383,21 @@ class HomeScreen extends StatelessWidget {
     required String label,
     required double amount,
     required NumberFormat format,
+    required BuildContext context,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(16),
           ),
-          child: Icon(icon, color: color, size: 18),
+          child: Icon(icon, color: color, size: 20),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -394,16 +406,16 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: Colors.black.withValues(alpha: 0.5),
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 4),
             Text(
               format.format(amount),
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: Colors.black,
+                color: colorScheme.onSurface,
                 letterSpacing: -0.5,
               ),
             ),
@@ -436,6 +448,8 @@ class _CountrySearchDialogState extends State<_CountrySearchDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final countries = widget.txProvider.searchableCountries;
     final filtered = _query.isEmpty
         ? countries
@@ -446,29 +460,30 @@ class _CountrySearchDialogState extends State<_CountrySearchDialog> {
           ).toList();
 
     return Dialog(
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      backgroundColor: colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 12, 0),
+            padding: const EdgeInsets.fromLTRB(24, 24, 16, 0),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
                     'Search Country',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.5,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close_rounded),
+                  icon: Icon(Icons.close_rounded, color: colorScheme.onSurface.withValues(alpha: 0.6)),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -476,29 +491,31 @@ class _CountrySearchDialogState extends State<_CountrySearchDialog> {
           ),
           // Search field
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: TextField(
               autofocus: true,
+              style: TextStyle(color: colorScheme.onSurface),
               onChanged: (val) => setState(() => _query = val),
               decoration: InputDecoration(
                 hintText: 'Search by country name...',
-                prefixIcon: const Icon(Icons.search, size: 20),
+                hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
+                prefixIcon: Icon(Icons.search, size: 20, color: colorScheme.onSurface.withValues(alpha: 0.5)),
                 filled: true,
-                fillColor: Colors.grey.shade100,
+                fillColor: isDark ? colorScheme.onSurface.withValues(alpha: 0.05) : Colors.grey.shade100,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14),
               ),
             ),
           ),
           // Results
           Flexible(
             child: filtered.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(32),
-                    child: Text('No countries found', style: TextStyle(color: Colors.black45)),
+                ? Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Text('No countries found', style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4))),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
@@ -508,12 +525,12 @@ class _CountrySearchDialogState extends State<_CountrySearchDialog> {
                       final isSelected = widget.txProvider.selectedCurrency == country['symbol'];
                       return ListTile(
                         leading: Container(
-                          width: 40,
-                          height: 40,
+                          width: 44,
+                          height: 44,
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? Colors.black.withValues(alpha: 0.08)
-                                : Colors.grey.shade100,
+                                ? colorScheme.primary.withValues(alpha: 0.1)
+                                : (isDark ? colorScheme.onSurface.withValues(alpha: 0.05) : Colors.grey.shade100),
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -521,8 +538,8 @@ class _CountrySearchDialogState extends State<_CountrySearchDialog> {
                               country['symbol']!,
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
-                                fontSize: 14,
-                                color: isSelected ? Colors.black : Colors.black54,
+                                fontSize: 16,
+                                color: isSelected ? colorScheme.primary : colorScheme.onSurface.withValues(alpha: 0.7),
                               ),
                             ),
                           ),
@@ -531,15 +548,16 @@ class _CountrySearchDialogState extends State<_CountrySearchDialog> {
                           country['name']!,
                           style: TextStyle(
                             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                            fontSize: 15,
+                            fontSize: 16,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         subtitle: Text(
                           country['code']!,
-                          style: const TextStyle(fontSize: 12, color: Colors.black38),
+                          style: TextStyle(fontSize: 13, color: colorScheme.onSurface.withValues(alpha: 0.5)),
                         ),
                         trailing: isSelected
-                            ? const Icon(Icons.check_circle, color: Colors.black, size: 20)
+                            ? Icon(Icons.check_circle, color: colorScheme.primary, size: 22)
                             : null,
                         onTap: () {
                           widget.txProvider.updateCurrency(country['symbol']!);
@@ -555,7 +573,7 @@ class _CountrySearchDialogState extends State<_CountrySearchDialog> {
                     },
                   ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
         ],
       ),
     );
