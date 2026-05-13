@@ -232,14 +232,14 @@ class HomeScreen extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF7C3AED), Color(0xFF5B21B6)],
+          colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(36),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7C3AED).withValues(alpha: 0.3),
+            color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
             blurRadius: 30,
             offset: const Offset(0, 15),
           ),

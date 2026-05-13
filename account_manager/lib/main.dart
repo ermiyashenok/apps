@@ -35,15 +35,15 @@ class AccountManagerApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF7C3AED),
+          seedColor: const Color(0xFF8B5CF6),
           primary: const Color(0xFF111827),
-          secondary: const Color(0xFF7C3AED),
+          secondary: const Color(0xFF8B5CF6),
           secondaryContainer: const Color(0xFFF5F3FF),
-          onSecondaryContainer: const Color(0xFF7C3AED),
+          onSecondaryContainer: const Color(0xFF8B5CF6),
           surface: Colors.white,
         ),
         scaffoldBackgroundColor: const Color(0xFFFCFCFD),
-        textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme),
+        textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -67,10 +67,10 @@ class AccountManagerApp extends StatelessWidget {
       darkTheme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF7C3AED),
+          seedColor: const Color(0xFF8B5CF6),
           brightness: Brightness.dark,
           primary: Colors.white,
-          secondary: const Color(0xFF9F67FF),
+          secondary: const Color(0xFFA78BFA),
           surface: const Color(0xFF1F2937),
           background: const Color(0xFF111827),
         ),

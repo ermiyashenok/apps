@@ -346,14 +346,14 @@ class _AiReviewSectionState extends State<AiReviewSection> {
         gradient: LinearGradient(
           colors: isDark 
               ? [colorScheme.secondary.withValues(alpha: 0.8), colorScheme.primary.withValues(alpha: 0.8)]
-              : [const Color(0xFF7C3AED), const Color(0xFF9F67FF)],
+              : [const Color(0xFF8B5CF6), const Color(0xFFA78BFA)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(36),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7C3AED).withValues(alpha: 0.3),
+            color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
             blurRadius: 30,
             offset: const Offset(0, 15),
           ),
@@ -433,7 +433,7 @@ class _AiReviewSectionState extends State<AiReviewSection> {
                 onPressed: _generateReview,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF7C3AED),
+                  foregroundColor: const Color(0xFF8B5CF6),
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   elevation: 0,
