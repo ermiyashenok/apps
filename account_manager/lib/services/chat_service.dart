@@ -5,7 +5,7 @@ import '../models/transaction.dart';
 
 class ChatService {
   
-  static const String _apiKey = 'AIzaSyB1pZqJPNnGXF9d0GvWcFB5hBmvKTh458E';
+  static const String _apiKey = 'YOUR_GEMINI_API_KEY_HERE';
   // ============================================================
 
   static const String _baseUrl =
