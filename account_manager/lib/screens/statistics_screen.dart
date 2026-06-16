@@ -170,13 +170,18 @@ class StatisticsScreen extends StatelessWidget {
                   'Net Balance',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: colorScheme.onSurface.withValues(alpha: 0.6)),
                 ),
-                Text(
-                  format.format(balance),
-                  style: TextStyle(
-                    fontSize: 24, 
-                    fontWeight: FontWeight.w800,
-                    color: balance >= 0 ? colorScheme.onSurface : const Color(0xFFF43F5E),
-                    letterSpacing: -0.5,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    format.format(balance),
+                    textAlign: TextAlign.right,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 24, 
+                      fontWeight: FontWeight.w800,
+                      color: balance >= 0 ? colorScheme.onSurface : const Color(0xFFF43F5E),
+                      letterSpacing: -0.5,
+                    ),
                   ),
                 ),
               ],
