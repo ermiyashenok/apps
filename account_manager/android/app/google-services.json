@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "447707051518",
+    "project_id": "account-manager-a986b",
+    "storage_bucket": "account-manager-a986b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447707051518:android:2990e53b624bd02a397caf",
+        "android_client_info": {
+          "package_name": "com.example.account_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6KpveqaPCJPSVKmP2HThyrLM3szHMSVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
