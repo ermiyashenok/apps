@@ -1,37 +1,41 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthProvider with ChangeNotifier {
-  String? _currentUserEmail;
-  String? _displayName;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
   bool _isGuest = false;
   bool _notificationsEnabled = true;
-  
-  String? get userEmail => _currentUserEmail;
-  String? get displayName => _displayName ?? (_currentUserEmail?.split('@')[0] ?? 'User');
+
+  String? get userEmail => _user?.email;
+  String? get displayName => _user?.displayName ?? (_user?.email?.split('@')[0] ?? 'User');
   bool get isGuest => _isGuest;
   bool get notificationsEnabled => _notificationsEnabled;
-  bool get isAuthenticated => _currentUserEmail != null || _isGuest;
+  bool get isAuthenticated => _user != null || _isGuest;
 
   AuthProvider() {
-    _loadSession();
+    _auth.authStateChanges().listen((User? user) {
+      _user = user;
+      notifyListeners();
+    });
+    _loadPreferences();
   }
 
-  Future<void> _loadSession() async {
+  Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    _currentUserEmail = prefs.getString('current_user');
-    _displayName = prefs.getString('display_name');
     _isGuest = prefs.getBool('is_guest') ?? false;
     _notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
     notifyListeners();
   }
 
   Future<void> updateDisplayName(String name) async {
-    final prefs = await SharedPreferences.getInstance();
-    _displayName = name;
-    await prefs.setString('display_name', name);
-    notifyListeners();
+    if (_user != null) {
+      await _user!.updateDisplayName(name);
+      await _user!.reload();
+      _user = _auth.currentUser;
+      notifyListeners();
+    }
   }
 
   Future<void> toggleNotifications(bool value) async {
@@ -42,58 +46,47 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<String?> login(String email, String password) async {
-    final prefs = await SharedPreferences.getInstance();
-    final usersJson = prefs.getString('local_users') ?? '{}';
-    final Map<String, dynamic> users = json.decode(usersJson);
-
-    if (users.containsKey(email)) {
-      if (users[email] == password) {
-        _currentUserEmail = email;
-        _isGuest = false;
-        await prefs.setString('current_user', email);
-        await prefs.setBool('is_guest', false);
-        notifyListeners();
-        return null;
-      }
-      return 'Incorrect password';
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('is_guest', false);
+      _isGuest = false;
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') return 'Account not found. Please Sign Up first.';
+      if (e.code == 'wrong-password') return 'Incorrect password';
+      return e.message;
+    } catch (e) {
+      return e.toString();
     }
-    return 'Account not found. Please Sign Up first.';
   }
 
   Future<String?> register(String email, String password) async {
-    final prefs = await SharedPreferences.getInstance();
-    final usersJson = prefs.getString('local_users') ?? '{}';
-    final Map<String, dynamic> users = json.decode(usersJson);
-
-    if (users.containsKey(email)) return 'An account already exists';
-
-    users[email] = password;
-    await prefs.setString('local_users', json.encode(users));
-    
-    _currentUserEmail = email;
-    _isGuest = false;
-    await prefs.setString('current_user', email);
-    await prefs.setBool('is_guest', false);
-    notifyListeners();
-    return null;
+    try {
+      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('is_guest', false);
+      _isGuest = false;
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') return 'An account already exists';
+      return e.message;
+    } catch (e) {
+      return e.toString();
+    }
   }
 
   void continueAsGuest() async {
     final prefs = await SharedPreferences.getInstance();
     _isGuest = true;
-    _currentUserEmail = null;
-    await prefs.remove('current_user');
     await prefs.setBool('is_guest', true);
     notifyListeners();
   }
 
   Future<void> logout() async {
+    await _auth.signOut();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('current_user');
-    await prefs.remove('is_guest');
-    await prefs.remove('display_name');
-    _currentUserEmail = null;
-    _displayName = null;
+    await prefs.setBool('is_guest', false);
     _isGuest = false;
     notifyListeners();
   }
