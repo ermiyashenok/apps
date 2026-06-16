@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/transaction.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -40,9 +43,41 @@ class TransactionProvider with ChangeNotifier {
     return Icons.more_horiz;
   }
 
+  StreamSubscription? _txSubscription;
+  StreamSubscription? _authSubscription;
+
   TransactionProvider() {
-    _loadTransactions();
     _loadCurrency();
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user != null) {
+        _listenToTransactions(user.uid);
+      } else {
+        _txSubscription?.cancel();
+        _transactions = [];
+        _loadGuestTransactions();
+        notifyListeners();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    _txSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _listenToTransactions(String userId) {
+    _txSubscription?.cancel();
+    _txSubscription = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('transactions')
+        .snapshots()
+        .listen((snapshot) {
+      _transactions = snapshot.docs.map((doc) => Transaction.fromJson(doc.data())).toList();
+      notifyListeners();
+    });
   }
 
   Future<void> _loadCurrency() async {
@@ -58,7 +93,6 @@ class TransactionProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Returns a status message for the UI to display.
   Future<String> detectCurrencyFromLocation() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -78,10 +112,8 @@ class TransactionProvider with ChangeNotifier {
         await Geolocator.openAppSettings();
         return 'Location permission permanently denied. Please enable in app settings.';
       }
-      // Try cached location first (instant)
       Position? position = await Geolocator.getLastKnownPosition();
       
-      // Fall back to fresh GPS fix if no cached position
       position ??= await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.low,
@@ -110,7 +142,6 @@ class TransactionProvider with ChangeNotifier {
     }
   }
 
-  // Full country code -> currency symbol map
   static const Map<String, String> _countryCurrencyMap = {
     'US': '\$', 'CA': 'C\$', 'AU': 'A\$', 'NZ': 'NZ\$', 'SG': 'S\$', 'HK': 'HK\$',
     'GB': '£',
@@ -135,7 +166,6 @@ class TransactionProvider with ChangeNotifier {
     'IL': '₪', 'TW': 'NT\$', 'UA': '₴',
   };
 
-  // Full country code -> country name map
   static const Map<String, String> _countryNameMap = {
     'US': 'United States', 'CA': 'Canada', 'AU': 'Australia', 'NZ': 'New Zealand',
     'SG': 'Singapore', 'HK': 'Hong Kong', 'GB': 'United Kingdom',
@@ -156,7 +186,6 @@ class TransactionProvider with ChangeNotifier {
     'PE': 'Peru', 'IL': 'Israel', 'TW': 'Taiwan', 'UA': 'Ukraine',
   };
 
-  /// Returns list of {code, name, symbol} maps for the search UI.
   List<Map<String, String>> get searchableCountries {
     final list = <Map<String, String>>[];
     for (final entry in _countryNameMap.entries) {
@@ -174,8 +203,7 @@ class TransactionProvider with ChangeNotifier {
     return _countryCurrencyMap[countryCode] ?? '\$';
   }
 
-
-  Future<void> _loadTransactions() async {
+  Future<void> _loadGuestTransactions() async {
     final prefs = await SharedPreferences.getInstance();
     final String? transactionsString = prefs.getString('transactions');
     if (transactionsString != null) {
@@ -185,7 +213,7 @@ class TransactionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _saveTransactions() async {
+  Future<void> _saveGuestTransactions() async {
     final prefs = await SharedPreferences.getInstance();
     final String transactionsString = json.encode(
       _transactions.map((tx) => tx.toJson()).toList(),
@@ -194,7 +222,6 @@ class TransactionProvider with ChangeNotifier {
   }
 
   List<Transaction> get transactions {
-    // Return a sorted list, newest first
     var sortedList = [..._transactions];
     sortedList.sort((a, b) => b.date.compareTo(a.date));
     return sortedList;
@@ -237,15 +264,38 @@ class TransactionProvider with ChangeNotifier {
   }
 
   void addTransaction(Transaction tx) {
-    _transactions.add(tx);
-    _saveTransactions();
-    notifyListeners();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('transactions')
+          .doc(tx.id)
+          .set({
+             ...tx.toJson(),
+             'userId': user.uid,
+          });
+    } else {
+      _transactions.add(tx);
+      _saveGuestTransactions();
+      notifyListeners();
+    }
   }
 
   void deleteTransaction(String id) {
-    _transactions.removeWhere((tx) => tx.id == id);
-    _saveTransactions();
-    notifyListeners();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('transactions')
+          .doc(id)
+          .delete();
+    } else {
+      _transactions.removeWhere((tx) => tx.id == id);
+      _saveGuestTransactions();
+      notifyListeners();
+    }
   }
 
   Map<String, double> getCategoryBreakdown({required bool isIncome}) {
