@@ -9,6 +9,7 @@ class Transaction {
   final String category;
   final String comment;
   final DateTime createdAt;
+  final String accountType; // "Personal" or "Business"
 
   Transaction({
     required this.id,
@@ -19,6 +20,7 @@ class Transaction {
     required this.category,
     required this.comment,
     DateTime? createdAt,
+    this.accountType = 'Personal',
   }) : _type = type ?? TransactionType.expense, 
        createdAt = createdAt ?? DateTime.now();
 
@@ -36,6 +38,7 @@ class Transaction {
         'category': category,
         'comment': comment,
         'createdAt': createdAt.toIso8601String(),
+        'accountType': accountType,
       };
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
@@ -64,6 +67,7 @@ class Transaction {
         category: (json['category'] ?? 'Other').toString(),
         comment: (json['comment'] ?? '').toString(),
         createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) : null,
+        accountType: (json['accountType'] ?? 'Personal').toString(),
       );
     } catch (e) {
       return Transaction(
@@ -73,6 +77,7 @@ class Transaction {
         type: TransactionType.expense,
         category: 'Error',
         comment: 'Failed to load transaction',
+        accountType: 'Personal',
       );
     }
   }
