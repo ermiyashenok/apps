@@ -7,6 +7,7 @@ import '../models/transaction.dart';
 import 'add_transaction_screen.dart';
 import 'consultant_screen.dart';
 import 'profile_screen.dart';
+import 'manage_accounts_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -53,6 +54,7 @@ class HomeScreen extends StatelessWidget {
             ),
             centerTitle: true,
             actions: [
+              _buildAccountSwitcher(context, txProvider),
               _buildCurrencyPicker(context, txProvider, colorScheme, isDark),
               const SizedBox(width: 8),
             ],
@@ -227,19 +229,31 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildPremiumBalanceCard(BuildContext context, TransactionProvider txProvider, NumberFormat format) {
+    List<Color> gradientColors;
+    if (txProvider.selectedAccountType == 'All') {
+      gradientColors = [const Color(0xFF27272A), const Color(0xFF18181B)]; // Dark Black/Grey
+    } else {
+      final account = txProvider.accounts.firstWhere(
+        (a) => a.id == txProvider.selectedAccountType, 
+        orElse: () => txProvider.accounts.isNotEmpty ? txProvider.accounts.first : txProvider.accounts.first
+      );
+      final c = Color(account.colorValue);
+      gradientColors = [c, c.withValues(alpha: 0.8)];
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       width: double.infinity,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
+        gradient: LinearGradient(
+          colors: gradientColors,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(36),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+            color: gradientColors[0].withValues(alpha: 0.3),
             blurRadius: 30,
             offset: const Offset(0, 15),
           ),
@@ -314,7 +328,9 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Available across all accounts',
+                  txProvider.selectedAccountType == 'All' 
+                    ? 'Available across all accounts'
+                    : '${txProvider.accounts.firstWhere((a) => a.id == txProvider.selectedAccountType).name} Balance',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 14,
@@ -534,6 +550,70 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAccountSwitcher(BuildContext context, TransactionProvider txProvider) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return PopupMenuButton<String>(
+      icon: Icon(Icons.account_balance_wallet, color: colorScheme.onSurface),
+      tooltip: 'Switch Account',
+      color: colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      position: PopupMenuPosition.under,
+      onSelected: (String value) {
+        if (value == 'manage') {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageAccountsScreen()));
+        } else {
+          txProvider.setAccountType(value);
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        final items = <PopupMenuEntry<String>>[
+          PopupMenuItem<String>(
+            value: 'All', 
+            child: Row(
+              children: [
+                Icon(Icons.all_inclusive, size: 18, color: txProvider.selectedAccountType == 'All' ? colorScheme.primary : colorScheme.onSurface.withValues(alpha: 0.7)),
+                const SizedBox(width: 8),
+                Text('All Accounts', style: TextStyle(fontWeight: txProvider.selectedAccountType == 'All' ? FontWeight.bold : FontWeight.normal)),
+              ],
+            )
+          ),
+          const PopupMenuDivider(),
+        ];
+        
+        for (final acc in txProvider.accounts) {
+          items.add(
+            PopupMenuItem<String>(
+              value: acc.id, 
+              child: Row(
+                children: [
+                  Icon(Icons.circle, size: 14, color: Color(acc.colorValue)),
+                  const SizedBox(width: 8),
+                  Text(acc.name, style: TextStyle(fontWeight: txProvider.selectedAccountType == acc.id ? FontWeight.bold : FontWeight.normal)),
+                ],
+              )
+            )
+          );
+        }
+        
+        items.add(const PopupMenuDivider());
+        items.add(
+          PopupMenuItem<String>(
+            value: 'manage', 
+            child: Row(
+              children: [
+                Icon(Icons.settings, size: 18, color: colorScheme.onSurface.withValues(alpha: 0.7)),
+                const SizedBox(width: 8),
+                const Text('Manage Accounts'),
+              ],
+            )
+          )
+        );
+        
+        return items;
+      },
     );
   }
 
