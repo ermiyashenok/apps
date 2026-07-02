@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/transaction.dart';
+import '../models/account.dart';
 import '../providers/transaction_provider.dart';
 
 class AddTransactionScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final _commentController = TextEditingController();
   bool _isIncome = false;
   String _selectedCategory = 'Other';
+  String _accountType = 'Personal';
 
   @override
   void dispose() {
@@ -46,6 +48,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       type: _isIncome ? TransactionType.income : TransactionType.expense,
       comment: _commentController.text.isEmpty ? 'No comment' : _commentController.text,
       category: _selectedCategory,
+      accountType: _accountType,
     );
 
     Provider.of<TransactionProvider>(context, listen: false).addTransaction(newTx);
@@ -54,7 +57,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currencySymbol = Provider.of<TransactionProvider>(context, listen: false).selectedCurrency;
+    final txProvider = Provider.of<TransactionProvider>(context, listen: false);
+    final currencySymbol = txProvider.selectedCurrency;
+    final accounts = Provider.of<TransactionProvider>(context).accounts;
     final categories = _isIncome 
         ? TransactionProvider.incomeCategories 
         : TransactionProvider.expenseCategories;
@@ -151,6 +156,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       const SizedBox(width: 12),
                       _buildTypeButton('Income', _isIncome, const Color(0xFF10B981)),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Account Type Selector
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: accounts.map((acc) => _buildAccountTypeButton(acc, _accountType == acc.id)).toList(),
                   ),
                   
                   const SizedBox(height: 32),
@@ -340,6 +353,37 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAccountTypeButton(Account account, bool isSelected) {
+    final color = Color(account.colorValue);
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _accountType = account.id;
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+        decoration: BoxDecoration(
+          color: isSelected ? color.withValues(alpha: 0.1) : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? color : const Color(0xFFE5E7EB),
+            width: 1.5,
+          ),
+        ),
+        child: Text(
+          account.name,
+          style: TextStyle(
+            color: isSelected ? color : const Color(0xFF6B7280),
+            fontWeight: FontWeight.w700,
+            fontSize: 15,
           ),
         ),
       ),
