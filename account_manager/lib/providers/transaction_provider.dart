@@ -5,12 +5,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/transaction.dart';
+import '../models/account.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class TransactionProvider with ChangeNotifier {
   List<Transaction> _transactions = [];
+  List<Account> _accounts = [
+    Account(id: 'Personal', name: 'Personal', colorValue: 0xFF3B82F6),
+    Account(id: 'Business', name: 'Business', colorValue: 0xFFF97316),
+  ];
   String _selectedCurrency = '\$';
+  String _selectedAccountType = 'All'; // 'All', or Account id
 
   static const List<Map<String, dynamic>> incomeCategories = [
     {'name': 'Salary', 'icon': Icons.payments},
@@ -32,6 +38,15 @@ class TransactionProvider with ChangeNotifier {
   ];
 
   String get selectedCurrency => _selectedCurrency;
+  String get selectedAccountType => _selectedAccountType;
+  List<Account> get accounts => _accounts;
+
+  void setAccountType(String type) {
+    if (_selectedAccountType != type) {
+      _selectedAccountType = type;
+      notifyListeners();
+    }
+  }
 
   static IconData getCategoryIcon(String category) {
     for (var cat in incomeCategories) {
@@ -51,20 +66,41 @@ class TransactionProvider with ChangeNotifier {
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user != null) {
         _listenToTransactions(user.uid);
+        _listenToAccounts(user.uid);
       } else {
         _txSubscription?.cancel();
+        _accountSubscription?.cancel();
         _transactions = [];
         _loadGuestTransactions();
+        _loadGuestAccounts();
         notifyListeners();
       }
     });
   }
 
+  StreamSubscription? _accountSubscription;
+
   @override
   void dispose() {
     _authSubscription?.cancel();
     _txSubscription?.cancel();
+    _accountSubscription?.cancel();
     super.dispose();
+  }
+
+  void _listenToAccounts(String userId) {
+    _accountSubscription?.cancel();
+    _accountSubscription = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('accounts')
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        _accounts = snapshot.docs.map((doc) => Account.fromJson(doc.data())).toList();
+        notifyListeners();
+      }
+    });
   }
 
   void _listenToTransactions(String userId) {
@@ -221,10 +257,83 @@ class TransactionProvider with ChangeNotifier {
     await prefs.setString('transactions', transactionsString);
   }
 
+  Future<void> _loadGuestAccounts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? accountsString = prefs.getString('accounts');
+    if (accountsString != null) {
+      final List<dynamic> jsonList = json.decode(accountsString);
+      _accounts = jsonList.map((jsonItem) => Account.fromJson(jsonItem)).toList();
+      notifyListeners();
+    }
+  }
+
+  Future<void> _saveGuestAccounts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String accountsString = json.encode(
+      _accounts.map((acc) => acc.toJson()).toList(),
+    );
+    await prefs.setString('accounts', accountsString);
+  }
+
+  void addAccount(Account acc) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('accounts')
+          .doc(acc.id)
+          .set({
+             ...acc.toJson(),
+             'userId': user.uid,
+          });
+    } else {
+      _accounts.add(acc);
+      _saveGuestAccounts();
+      notifyListeners();
+    }
+  }
+
+  void updateAccount(Account acc) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('accounts')
+          .doc(acc.id)
+          .update(acc.toJson());
+    } else {
+      final index = _accounts.indexWhere((a) => a.id == acc.id);
+      if (index != -1) {
+        _accounts[index] = acc;
+        _saveGuestAccounts();
+        notifyListeners();
+      }
+    }
+  }
+
+  void deleteAccount(String id) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('accounts')
+          .doc(id)
+          .delete();
+    } else {
+      _accounts.removeWhere((acc) => acc.id == id);
+      if (_selectedAccountType == id) _selectedAccountType = 'All';
+      _saveGuestAccounts();
+      notifyListeners();
+    }
+  }
+
   List<Transaction> get transactions {
-    var sortedList = [..._transactions];
-    sortedList.sort((a, b) => b.date.compareTo(a.date));
-    return sortedList;
+    var filteredList = _transactions.where((tx) => _selectedAccountType == 'All' || tx.accountType == _selectedAccountType).toList();
+    filteredList.sort((a, b) => b.date.compareTo(a.date));
+    return filteredList;
   }
 
   double get totalBalance {
@@ -232,13 +341,13 @@ class TransactionProvider with ChangeNotifier {
   }
 
   double get totalIncome {
-    return _transactions
+    return transactions
         .where((tx) => tx.isIncome)
         .fold(0.0, (sum, tx) => sum + tx.amount);
   }
 
   double get totalExpense {
-    return _transactions
+    return transactions
         .where((tx) => !tx.isIncome)
         .fold(0.0, (sum, tx) => sum + tx.amount);
   }
@@ -300,7 +409,7 @@ class TransactionProvider with ChangeNotifier {
 
   Map<String, double> getCategoryBreakdown({required bool isIncome}) {
     final Map<String, double> breakdown = {};
-    for (var tx in _transactions.where((tx) => tx.isIncome == isIncome)) {
+    for (var tx in transactions.where((tx) => tx.isIncome == isIncome)) {
       breakdown[tx.category] = (breakdown[tx.category] ?? 0) + tx.amount;
     }
     return breakdown;
