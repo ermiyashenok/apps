@@ -40,11 +40,11 @@ class AccountManagerApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF8B5CF6),
+          seedColor: Colors.black,
           primary: const Color(0xFF111827),
-          secondary: const Color(0xFF8B5CF6),
-          secondaryContainer: const Color(0xFFF5F3FF),
-          onSecondaryContainer: const Color(0xFF8B5CF6),
+          secondary: Colors.black87,
+          secondaryContainer: const Color(0xFFF3F4F6),
+          onSecondaryContainer: Colors.black,
           surface: Colors.white,
         ),
         scaffoldBackgroundColor: const Color(0xFFFCFCFD),
@@ -72,10 +72,10 @@ class AccountManagerApp extends StatelessWidget {
       darkTheme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF8B5CF6),
+          seedColor: Colors.white,
           brightness: Brightness.dark,
           primary: Colors.white,
-          secondary: const Color(0xFFA78BFA),
+          secondary: Colors.grey[400]!,
           surface: const Color(0xFF1F2937),
           background: const Color(0xFF111827),
         ),
