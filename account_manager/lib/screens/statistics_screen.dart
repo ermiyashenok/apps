@@ -2,30 +2,80 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui';
+import 'dart:math' as math;
 import '../providers/transaction_provider.dart';
 import '../services/chat_service.dart';
 
-class StatisticsScreen extends StatelessWidget {
+class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
+
+  @override
+  State<StatisticsScreen> createState() => _StatisticsScreenState();
+}
+
+class _StatisticsScreenState extends State<StatisticsScreen> {
+  bool _isExpenses = true;
+
+  void _showAccountPicker(BuildContext context, TransactionProvider txProvider) {
+    final accounts = ['All', ...txProvider.accounts.map((a) => a.id)];
+    
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: accounts.map((accId) {
+              final isSelected = txProvider.selectedAccountType == accId;
+              final accName = accId == 'All' 
+                  ? 'All accounts' 
+                  : txProvider.accounts.firstWhere((a) => a.id == accId).name;
+              
+              return ListTile(
+                title: Text(accName, style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                trailing: isSelected ? const Icon(Icons.check, color: Color(0xFF3B82F6)) : null,
+                onTap: () {
+                  txProvider.setAccountType(accId);
+                  Navigator.pop(ctx);
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final txProvider = Provider.of<TransactionProvider>(context);
     final currencyFormat = NumberFormat.currency(
       symbol: txProvider.selectedCurrency, 
-      decimalDigits: 2,
+      decimalDigits: 0,
     );
     
-    final totalIncome = txProvider.totalIncome;
-    final totalExpense = txProvider.totalExpense;
-    final totalBalance = txProvider.totalBalance;
-    final hasData = totalIncome > 0 || totalExpense > 0;
-
-    final expenseBreakdown = txProvider.getCategoryBreakdown(isIncome: false);
-    final incomeBreakdown = txProvider.getCategoryBreakdown(isIncome: true);
+    final breakdown = txProvider.getCategoryBreakdown(isIncome: !_isExpenses);
+    final total = breakdown.values.fold(0.0, (a, b) => a + b);
+    final hasData = total > 0;
 
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final sortedKeys = breakdown.keys.toList()..sort((a, b) => breakdown[b]!.compareTo(breakdown[a]!));
+
+    final chartColors = [
+      const Color(0xFF3B82F6), // blue
+      const Color(0xFFF97316), // orange
+      const Color(0xFF10B981), // green
+      const Color(0xFF8B5CF6), // purple
+      const Color(0xFFF43F5E), // red
+      const Color(0xFFEAB308), // yellow
+      const Color(0xFF06B6D4), // cyan
+      const Color(0xFF9CA3AF), // grey
+    ];
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -43,256 +93,234 @@ class StatisticsScreen extends StatelessWidget {
                 child: Container(color: Colors.transparent),
               ),
             ),
-            title: Text(
-              'Insights', 
-              style: TextStyle(
-                color: colorScheme.onSurface, 
-                fontWeight: FontWeight.w800, 
-                fontSize: 24, 
-                letterSpacing: -1.0
-              )
-            ),
-            centerTitle: false,
-          ),
-          
-          if (!hasData)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: colorScheme.onSurface.withValues(alpha: 0.03),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.analytics_outlined, size: 64, color: colorScheme.onSurface.withValues(alpha: 0.2)),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'No transactions to analyze', 
-                      style: TextStyle(fontSize: 16, color: colorScheme.onSurface.withValues(alpha: 0.5), fontWeight: FontWeight.w500)
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Summary Section
-                    _buildPremiumSummaryCard(context, totalIncome, totalExpense, totalBalance, currencyFormat),
-                    
-                    const SizedBox(height: 40),
-                    Text(
-                      'Spending Breakdowns',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: -0.5, color: colorScheme.onSurface),
-                    ),
-                    const SizedBox(height: 24),
-                    
-                    // Expense Category Breakdown Card
-                    if (expenseBreakdown.isNotEmpty) 
-                      _buildBreakdownCard('Expenses', expenseBreakdown, currencyFormat, const Color(0xFFF43F5E), context),
-
-                    if (expenseBreakdown.isNotEmpty) const SizedBox(height: 24),
-
-                    // Income Category Breakdown Card
-                    if (incomeBreakdown.isNotEmpty)
-                      _buildBreakdownCard('Income Sources', incomeBreakdown, currencyFormat, const Color(0xFF10B981), context),
-                    
-                    if (incomeBreakdown.isNotEmpty) const SizedBox(height: 40),
-                    
-                    // AI Review Section
-                    const AiReviewSection(),
-                    
-                    const SizedBox(height: 100),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPremiumSummaryCard(BuildContext context, double income, double expense, double balance, NumberFormat format) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(36),
-        border: Border.all(
-          color: isDark ? colorScheme.onSurface.withValues(alpha: 0.05) : Colors.transparent,
-        ),
-        boxShadow: [
-          if (!isDark)
-            BoxShadow(
-              color: colorScheme.primary.withValues(alpha: 0.04),
-              blurRadius: 30,
-              offset: const Offset(0, 15),
-            )
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: _buildMiniStat('Income', income, const Color(0xFF10B981), format, context),
-              ),
-              Container(height: 56, width: 1, color: colorScheme.onSurface.withValues(alpha: 0.08)),
-              Expanded(
-                child: _buildMiniStat('Expense', expense, const Color(0xFFF43F5E), format, context),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            decoration: BoxDecoration(
-              color: colorScheme.onSurface.withValues(alpha: 0.03),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Net Balance',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: colorScheme.onSurface.withValues(alpha: 0.6)),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    format.format(balance),
-                    textAlign: TextAlign.right,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 24, 
-                      fontWeight: FontWeight.w800,
-                      color: balance >= 0 ? colorScheme.onSurface : const Color(0xFFF43F5E),
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMiniStat(String label, double amount, Color color, NumberFormat format, BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: colorScheme.onSurface.withValues(alpha: 0.5)),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          format.format(amount),
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: color, letterSpacing: -0.5),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBreakdownCard(String title, Map<String, double> data, NumberFormat format, Color themeColor, BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sortedKeys = data.keys.toList()..sort((a, b) => data[b]!.compareTo(data[a]!));
-    final total = data.values.fold(0.0, (a, b) => a + b);
-
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(36),
-        border: Border.all(
-          color: isDark ? colorScheme.onSurface.withValues(alpha: 0.05) : Colors.transparent,
-        ),
-        boxShadow: [
-          if (!isDark)
-            BoxShadow(
-              color: colorScheme.primary.withValues(alpha: 0.03),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
-            )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: colorScheme.onSurface, letterSpacing: -0.2),
-          ),
-          const SizedBox(height: 32),
-          ...sortedKeys.map((category) {
-            final amount = data[category]!;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
-              child: Column(
+            title: GestureDetector(
+              onTap: () => _showAccountPicker(context, txProvider),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: themeColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Icon(
-                          TransactionProvider.getCategoryIcon(category),
-                          size: 20,
-                          color: themeColor,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          category,
-                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: colorScheme.onSurface),
-                        ),
-                      ),
-                      Text(
-                        format.format(amount),
-                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: colorScheme.onSurface, letterSpacing: -0.5),
-                      ),
-                    ],
+                  Text(
+                    txProvider.selectedAccountType == 'All' 
+                        ? 'Statistics (All cards)' 
+                        : 'Statistics (${txProvider.selectedAccountType})',
+                    style: TextStyle(
+                      color: colorScheme.onSurface, 
+                      fontWeight: FontWeight.w800, 
+                      fontSize: 20, 
+                      letterSpacing: -0.5
+                    )
                   ),
-                  const SizedBox(height: 16),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: LinearProgressIndicator(
-                      value: amount / total,
-                      backgroundColor: themeColor.withValues(alpha: 0.08),
-                      valueColor: AlwaysStoppedAnimation<Color>(themeColor.withValues(alpha: 0.8)),
-                      minHeight: 12,
-                    ),
-                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: colorScheme.onSurface, size: 24),
                 ],
               ),
-            );
-          }),
+            ),
+            centerTitle: true,
+          ),
+          
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Toggle Expenses / Income
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1E1E1E) : Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () => setState(() => _isExpenses = true),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: _isExpenses ? (isDark ? Colors.white : Colors.black) : Colors.transparent,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text('Expenses', style: TextStyle(
+                              color: _isExpenses ? (isDark ? Colors.black : Colors.white) : colorScheme.onSurface.withOpacity(0.6),
+                              fontWeight: _isExpenses ? FontWeight.bold : FontWeight.w500,
+                            )),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => setState(() => _isExpenses = false),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: !_isExpenses ? (isDark ? Colors.white : Colors.black) : Colors.transparent,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text('Income', style: TextStyle(
+                              color: !_isExpenses ? (isDark ? Colors.black : Colors.white) : colorScheme.onSurface.withOpacity(0.6),
+                              fontWeight: !_isExpenses ? FontWeight.bold : FontWeight.w500,
+                            )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 40),
+                  
+                  // Donut Chart
+                  if (!hasData)
+                    Container(
+                      height: 240,
+                      alignment: Alignment.center,
+                      child: Text('No data available.', style: TextStyle(color: colorScheme.onSurface.withOpacity(0.5))),
+                    )
+                  else
+                    SizedBox(
+                      height: 240,
+                      width: 240,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          CustomPaint(
+                            size: const Size(240, 240),
+                            painter: DonutChartPainter(breakdown, total, chartColors),
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                currencyFormat.format(total),
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w800,
+                                  color: colorScheme.onSurface,
+                                  letterSpacing: -1.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  
+                  const SizedBox(height: 40),
+                  
+                  // Legend Grid
+                  if (hasData)
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 16,
+                      children: List.generate(sortedKeys.length, (index) {
+                        final cat = sortedKeys[index];
+                        final amount = breakdown[cat]!;
+                        final color = chartColors[index % chartColors.length];
+                        return SizedBox(
+                          width: (MediaQuery.of(context).size.width - 48 - 16) / 2,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 14, 
+                                height: 14, 
+                                decoration: BoxDecoration(
+                                  color: color, 
+                                  shape: BoxShape.circle
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  cat, 
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface.withOpacity(0.7),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Text(
+                                currencyFormat.format(amount), 
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 15,
+                                  color: colorScheme.onSurface,
+                                )
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+
+                  const SizedBox(height: 48),
+                  
+                  // AI Review Section
+                  // const AiReviewSection(), // Temporarily commented out until API integration
+                  
+                  const SizedBox(height: 120),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
+class DonutChartPainter extends CustomPainter {
+  final Map<String, double> data;
+  final double total;
+  final List<Color> colors;
+
+  DonutChartPainter(this.data, this.total, this.colors);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (total == 0) return;
+    
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+    const strokeWidth = 24.0;
+    
+    double startAngle = -math.pi / 2;
+    
+    int colorIndex = 0;
+    for (var entry in data.entries) {
+      final sweepAngle = (entry.value / total) * 2 * math.pi;
+      final paint = Paint()
+        ..color = colors[colorIndex % colors.length]
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth
+        ..strokeCap = StrokeCap.round;
+
+      final gap = 0.15; // gap between segments
+      if (sweepAngle > gap) {
+        canvas.drawArc(
+          Rect.fromCircle(center: center, radius: radius - strokeWidth / 2),
+          startAngle + gap/2,
+          sweepAngle - gap,
+          false,
+          paint,
+        );
+      } else {
+         canvas.drawArc(
+          Rect.fromCircle(center: center, radius: radius - strokeWidth / 2),
+          startAngle,
+          sweepAngle,
+          false,
+          paint,
+        );
+      }
+      startAngle += sweepAngle;
+      colorIndex++;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
 
 class AiReviewSection extends StatefulWidget {
   const AiReviewSection({super.key});
