@@ -36,13 +36,7 @@ class HomeScreen extends StatelessWidget {
                 child: Container(color: Colors.transparent),
               ),
             ),
-            leading: IconButton(
-              icon: Icon(Icons.grid_view_rounded, color: colorScheme.onSurface),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()),
-              ),
-            ),
+            // leading: IconButton(...) removed
             title: Text(
               'Dashboard', 
               style: TextStyle(
@@ -65,8 +59,8 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Ultra Premium Main Balance Card
-                  _buildPremiumBalanceCard(context, txProvider, currencyFormat),
+                  // Ultra Premium Main Balance Carousel
+                  _PremiumBalanceCarousel(format: currencyFormat),
                   
                   const SizedBox(height: 32),
                   
@@ -201,6 +195,7 @@ class HomeScreen extends StatelessWidget {
             ),
         ],
       ),
+      /*
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 16.0),
         child: FloatingActionButton.extended(
@@ -225,125 +220,11 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      */
     );
   }
 
-  Widget _buildPremiumBalanceCard(BuildContext context, TransactionProvider txProvider, NumberFormat format) {
-    List<Color> gradientColors;
-    if (txProvider.selectedAccountType == 'All') {
-      gradientColors = [const Color(0xFF27272A), const Color(0xFF18181B)]; // Dark Black/Grey
-    } else {
-      final account = txProvider.accounts.firstWhere(
-        (a) => a.id == txProvider.selectedAccountType, 
-        orElse: () => txProvider.accounts.isNotEmpty ? txProvider.accounts.first : txProvider.accounts.first
-      );
-      final c = Color(account.colorValue);
-      gradientColors = [c, c.withValues(alpha: 0.8)];
-    }
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: gradientColors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(36),
-        boxShadow: [
-          BoxShadow(
-            color: gradientColors[0].withValues(alpha: 0.3),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Decorative background elements
-          Positioned(
-            right: -20,
-            top: -20,
-            child: Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.1),
-              ),
-            ),
-          ),
-          Positioned(
-            left: -40,
-            bottom: -40,
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.05),
-              ),
-            ),
-          ),
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-                      ),
-                      child: const Text(
-                        'Total Balance',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    Icon(Icons.account_balance_wallet_rounded, color: Colors.white.withValues(alpha: 0.7), size: 24),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  format.format(txProvider.totalBalance),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 48,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -2.5,
-                    height: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  txProvider.selectedAccountType == 'All' 
-                    ? 'Available across all accounts'
-                    : '${txProvider.accounts.firstWhere((a) => a.id == txProvider.selectedAccountType).name} Balance',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.7),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildPremiumStatCard({
     required BuildContext context,
@@ -822,6 +703,182 @@ class _CountrySearchDialogState extends State<_CountrySearchDialog> {
                   ),
           ),
           const SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
+}
+
+class _PremiumBalanceCarousel extends StatefulWidget {
+  final NumberFormat format;
+  const _PremiumBalanceCarousel({required this.format});
+
+  @override
+  State<_PremiumBalanceCarousel> createState() => _PremiumBalanceCarouselState();
+}
+
+class _PremiumBalanceCarouselState extends State<_PremiumBalanceCarousel> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 1.0);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final txProvider = Provider.of<TransactionProvider>(context);
+    final accountsList = ['All', ...txProvider.accounts.map((a) => a.id)];
+    
+    int currentIndex = accountsList.indexOf(txProvider.selectedAccountType);
+    if (currentIndex == -1) currentIndex = 0;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_pageController.hasClients && _pageController.page?.round() != currentIndex) {
+        _pageController.animateToPage(currentIndex, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      }
+    });
+
+    return SizedBox(
+      height: 230,
+      child: PageView.builder(
+        controller: _pageController,
+        onPageChanged: (index) {
+          txProvider.setAccountType(accountsList[index]);
+        },
+        itemCount: accountsList.length,
+        itemBuilder: (context, index) {
+          final accId = accountsList[index];
+          final balance = txProvider.getBalanceForAccount(accId);
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: _buildCard(context, txProvider, accId, balance),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildCard(BuildContext context, TransactionProvider txProvider, String accId, double balance) {
+    List<Color> gradientColors;
+    String accountName;
+    
+    if (accId == 'All') {
+      gradientColors = [const Color(0xFF27272A), const Color(0xFF18181B)];
+      accountName = 'All Accounts';
+    } else {
+      final account = txProvider.accounts.firstWhere(
+        (a) => a.id == accId, 
+        orElse: () => txProvider.accounts.first
+      );
+      final c = Color(account.colorValue);
+      gradientColors = [c, c.withValues(alpha: 0.8)];
+      accountName = account.name;
+    }
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(36),
+        boxShadow: [
+          BoxShadow(
+            color: gradientColors[0].withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.1),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -40,
+            bottom: -40,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.05),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                      ),
+                      child: Text(
+                        accId == 'All' ? 'Total Balance' : '$accountName Balance',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(Icons.account_balance_wallet_rounded, color: Colors.white.withValues(alpha: 0.7), size: 24),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  widget.format.format(balance),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 48,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -2.5,
+                    height: 1.0,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  accId == 'All' 
+                    ? 'Available across all accounts'
+                    : 'Available in $accountName',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
