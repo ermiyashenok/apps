@@ -340,6 +340,15 @@ class TransactionProvider with ChangeNotifier {
     return totalIncome - totalExpense;
   }
 
+  double getBalanceForAccount(String accountId) {
+    if (accountId == 'All') {
+      return _transactions.fold(0.0, (sum, tx) => sum + (tx.isIncome ? tx.amount : -tx.amount));
+    }
+    return _transactions
+        .where((tx) => tx.accountType == accountId)
+        .fold(0.0, (sum, tx) => sum + (tx.isIncome ? tx.amount : -tx.amount));
+  }
+
   double get totalIncome {
     return transactions
         .where((tx) => tx.isIncome)
